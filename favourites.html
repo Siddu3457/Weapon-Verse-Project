@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My Favourites — WEAPON VERSE</title>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    /* ══════════════════════════
+       FAVOURITES PAGE STYLES
+    ══════════════════════════ */
+
+    /* Hero banner */
+    .fav-hero {
+      background: linear-gradient(135deg, var(--black) 0%, var(--gd) 100%);
+      border-bottom: 2px solid var(--ga);
+      text-align: center;
+      padding: 52px 24px 40px;
+      animation: slideDown .5s ease;
+    }
+    .fav-hero-icon {
+      width: 56px; height: 56px;
+      background: rgba(224,85,85,.15);
+      border: 2px solid rgba(224,85,85,.5);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 18px;
+      animation: pulse 2s infinite;
+    }
+    .fav-hero-icon svg { color: #e05555; }
+    @keyframes pulse {
+      0%,100% { box-shadow: 0 0 0 0 rgba(224,85,85,.3); }
+      50%      { box-shadow: 0 0 0 10px rgba(224,85,85,0); }
+    }
+    .fav-hero h1 {
+      font-family: var(--fh);
+      font-size: clamp(2rem, 6vw, 3.2rem);
+      font-weight: 800;
+      letter-spacing: 6px;
+      color: var(--white);
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      display: flex; align-items: center; justify-content: center; gap: 14px;
+    }
+    .fav-hero p {
+      color: var(--grey);
+      font-size: .95rem;
+      max-width: 480px;
+      margin: 0 auto;
+      line-height: 1.7;
+    }
+
+    /* Login required banner */
+    .fav-login-banner {
+      max-width: 500px;
+      margin: 80px auto;
+      text-align: center;
+      padding: 0 24px;
+      animation: fadeUp .5s ease;
+    }
+    .fav-login-banner svg {
+      width: 60px; height: 60px;
+      color: var(--grey);
+      opacity: .25;
+      margin: 0 auto 20px;
+      display: block;
+    }
+    .fav-login-banner h2 {
+      font-family: var(--fh);
+      font-size: 1.6rem;
+      letter-spacing: 3px;
+      color: var(--white);
+      margin-bottom: 10px;
+    }
+    .fav-login-banner p { color: var(--grey); font-size: .92rem; margin-bottom: 22px; line-height: 1.65; }
+    .fav-login-btn {
+      display: inline-block;
+      background: var(--gm); color: var(--white);
+      border: 1.5px solid var(--ga);
+      font-family: var(--fh); font-size: 1rem;
+      font-weight: 700; letter-spacing: 2px;
+      padding: 11px 30px; border-radius: 5px;
+      text-transform: uppercase; cursor: pointer;
+      transition: background .22s, transform .18s, box-shadow .22s;
+    }
+    .fav-login-btn:hover { background: var(--ga); transform: translateY(-2px); box-shadow: 0 6px 18px rgba(74,124,47,.35); }
+
+    /* Empty state */
+    .fav-empty {
+      max-width: 440px;
+      margin: 80px auto;
+      text-align: center;
+      padding: 0 24px;
+      animation: fadeUp .5s ease;
+    }
+    .fav-empty svg { width: 60px; height: 60px; color: #e05555; opacity: .2; margin: 0 auto 18px; display: block; }
+    .fav-empty h2 { font-family: var(--fh); font-size: 1.5rem; letter-spacing: 3px; color: var(--white); margin-bottom: 10px; }
+    .fav-empty p  { color: var(--grey); font-size: .9rem; line-height: 1.7; margin-bottom: 22px; }
+    .fav-empty a  {
+      display: inline-block; background: var(--gm); color: var(--white);
+      border: 1.5px solid var(--ga); font-family: var(--fh);
+      font-size: 1rem; font-weight: 700; letter-spacing: 2px;
+      padding: 11px 28px; border-radius: 5px; text-transform: uppercase;
+      transition: background .22s, transform .18s;
+    }
+    .fav-empty a:hover { background: var(--ga); transform: translateY(-2px); }
+
+    /* Stats bar */
+    .fav-stats-bar {
+      background: var(--black);
+      border-bottom: 1px solid var(--gd);
+      padding: 14px 24px;
+    }
+    .fav-stats-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+    .fav-stat-pill {
+      display: flex; align-items: center; gap: 7px;
+      background: var(--gd); border: 1px solid var(--gm);
+      padding: 5px 14px; border-radius: 20px;
+      font-size: .78rem; font-weight: 600; color: var(--grey-l);
+      letter-spacing: .5px;
+    }
+    .fav-stat-pill strong { color: var(--gl); font-size: .9rem; }
+
+    /* ── CATEGORY SECTION ── */
+    .fav-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 24px 70px;
+    }
+    .fav-cat-block {
+      margin-bottom: 52px;
+      animation: fadeUp .5s ease both;
+    }
+
+    /* Category heading */
+    .fav-cat-heading {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 22px;
+      padding-bottom: 14px;
+      border-bottom: 2px solid var(--gd);
+      position: relative;
+    }
+    /* coloured accent line on left */
+    .fav-cat-heading::before {
+      content: '';
+      position: absolute;
+      left: 0; bottom: -2px;
+      width: 60px; height: 2px;
+      background: var(--ga);
+      border-radius: 2px;
+    }
+    .fav-cat-icon-box {
+      width: 40px; height: 40px;
+      background: var(--gm);
+      border: 1.5px solid var(--ga);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      padding: 8px; color: var(--gl); flex-shrink: 0;
+    }
+    .fav-cat-icon-box svg { width: 100%; height: 100%; }
+    .fav-cat-title {
+      font-family: var(--fh);
+      font-size: 1.5rem;
+      font-weight: 800;
+      letter-spacing: 4px;
+      color: var(--white);
+      text-transform: uppercase;
+    }
+    .fav-cat-count {
+      font-family: var(--fb);
+      font-size: .75rem;
+      font-weight: 700;
+      color: var(--gl);
+      background: rgba(106,176,76,.15);
+      border: 1px solid rgba(106,176,76,.3);
+      padding: 3px 10px;
+      border-radius: 12px;
+    }
+
+    /* Cards grid */
+    .fav-cards-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 24px;
+    }
+
+    /* Each favourite gun card */
+    .fav-gun-card {
+      background: var(--card-bg, #111a10);
+      border: 1px solid var(--gd);
+      border-radius: 8px;
+      width: 260px;
+      overflow: hidden;
+      box-shadow: 0 4px 18px rgba(0,0,0,.5);
+      transition: transform .3s, border-color .3s, box-shadow .3s;
+      cursor: pointer;
+      position: relative;
+    }
+    .fav-gun-card:hover {
+      transform: translateY(-6px);
+      border-color: var(--ga);
+      box-shadow: 0 14px 36px rgba(0,0,0,.65), 0 0 20px rgba(74,124,47,.18);
+    }
+
+    /* Image area */
+    .fav-card-img {
+      position: relative;
+      height: 160px;
+      background: linear-gradient(160deg, var(--black) 0%, var(--gd) 100%);
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+    }
+    .fav-card-img img {
+      max-width: 100%; max-height: 140px;
+      object-fit: contain;
+      padding: 12px 16px;
+      filter: brightness(.88);
+      transition: transform .4s, filter .4s;
+    }
+    .fav-gun-card:hover .fav-card-img img { transform: scale(1.08); filter: brightness(1.05); }
+
+    /* Category badge on image */
+    .fav-card-badge {
+      position: absolute; top: 8px; left: 8px;
+      font-family: var(--fb); font-size: .62rem;
+      font-weight: 700; letter-spacing: 1.8px;
+      text-transform: uppercase;
+      padding: 3px 9px; border-radius: 3px;
+      border: 1px solid var(--ga);
+      background: var(--gm); color: var(--gl);
+    }
+
+    /* Remove heart button */
+    .fav-card-rm {
+      position: absolute; top: 8px; right: 8px;
+      width: 28px; height: 28px;
+      background: rgba(8,12,8,.8);
+      border: 1.5px solid #e05555;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      transition: background .2s, transform .18s;
+      z-index: 5;
+    }
+    .fav-card-rm:hover { background: rgba(224,85,85,.3); transform: scale(1.15); }
+    .fav-card-rm svg { width: 14px; height: 14px; color: #e05555; }
+
+    /* Card body */
+    .fav-card-body { padding: 14px 16px 16px; }
+    .fav-card-name {
+      font-family: var(--fh);
+      font-size: 1.15rem; font-weight: 700;
+      letter-spacing: 2px; color: var(--white);
+      text-transform: uppercase; margin-bottom: 4px;
+    }
+    /* Underline that expands on hover */
+    .fav-card-name::after {
+      content: ''; display: block;
+      width: 28px; height: 2px;
+      background: var(--ga); margin-top: 5px;
+      transition: width .3s;
+    }
+    .fav-gun-card:hover .fav-card-name::after { width: 60px; }
+
+    /* Specs mini table */
+    .fav-card-table {
+      width: 100%; border-collapse: collapse;
+      margin-top: 10px; font-size: .78rem;
+    }
+    .fav-card-table tr { border-bottom: 1px solid var(--tr-bdr, #253520); transition: background .15s; }
+    .fav-card-table tr:last-child { border-bottom: none; }
+    .fav-card-table tr:nth-child(odd)  { background: var(--tr-odd, #162014); }
+    .fav-card-table tr:nth-child(even) { background: transparent; }
+    .fav-card-table tr:hover { background: var(--gd); }
+    .fav-card-table td:first-child { font-weight: 700; color: var(--grey-l); padding: 5px 8px 5px 6px; width: 44%; }
+    .fav-card-table td:last-child  { color: var(--white); padding: 5px 6px; font-weight: 500; }
+
+    /* View details button */
+    .fav-card-view {
+      display: block; width: 100%;
+      background: var(--gd); border: 1px solid var(--gm);
+      color: var(--grey-l); font-family: var(--fh);
+      font-size: .85rem; font-weight: 700; letter-spacing: 1.5px;
+      padding: 8px 0; border-radius: 4px;
+      text-align: center; text-transform: uppercase;
+      cursor: pointer; margin-top: 12px;
+      transition: background .2s, border-color .2s, color .2s;
+    }
+    .fav-card-view:hover { background: var(--gm); border-color: var(--ga); color: var(--white); }
+
+    /* Stagger animations */
+    .fav-cat-block:nth-child(1) { animation-delay: .05s; }
+    .fav-cat-block:nth-child(2) { animation-delay: .12s; }
+    .fav-cat-block:nth-child(3) { animation-delay: .19s; }
+    .fav-cat-block:nth-child(4) { animation-delay: .26s; }
+    .fav-cat-block:nth-child(5) { animation-delay: .33s; }
+
+    @media(max-width:600px){
+      .fav-gun-card { width: 100%; }
+      .fav-hero { padding: 36px 16px 28px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="navbar-inner">
+    <a href="index.html" class="navbar-logo">⚔&nbsp;WEAPON VERSE</a>
+    <div class="navbar-center">
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="pistols.html">Pistols</a></li>
+        <li><a href="rifles.html">Rifles</a></li>
+        <li><a href="shotguns.html">Shotguns</a></li>
+        <li><a href="snipers.html">Snipers</a></li>
+        <li><a href="smg.html">SMGs</a></li>
+      </ul>
+    </div>
+    <div class="navbar-auth"></div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="fav-hero">
+  <div class="fav-hero-icon">
+    <svg viewBox="0 0 24 24" fill="currentColor" width="26" height="26">
+      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+    </svg>
+  </div>
+  <h1>My Favourites</h1>
+  <p>Your hand-picked arsenal — firearms saved across all categories, classified and displayed separately.</p>
+</div>
+
+<!-- Dynamic content injected by JS -->
+<div id="favPageContent"></div>
+
+<footer>
+  <p>⚔ <strong>WEAPON VERSE</strong> — This website is created for educational purposes only. &copy; 2025</p>
+</footer>
+
+<script src="script.js"></script>
+<script>
+/* Mark fav icon as active on this page */
+document.addEventListener('DOMContentLoaded', function(){
+  var btn = document.getElementById('navFavBtn');
+  if (btn) btn.classList.add('fav-active');
+});
+</script>
+<script>
+/* ================================================================
+   FAVOURITES PAGE — renders all saved guns grouped by category
+================================================================ */
+
+var FAV_CAT_ICONS = {
+  pistol:   '<svg viewBox="0 0 32 32" fill="currentColor"><rect x="2" y="13" width="18" height="6" rx="2"/><path d="M20 14 L29 11 L29 19 L20 16 Z"/><rect x="5" y="19" width="4" height="6" rx="1.5"/><rect x="4" y="13" width="2.5" height="3" rx="0.5"/><circle cx="8" cy="14.5" r="1"/></svg>',
+  rifle:    '<svg viewBox="0 0 32 32" fill="currentColor"><rect x="1" y="14" width="22" height="4" rx="1.5"/><path d="M23 14.5 L31 12 L31 20 L23 17.5 Z"/><rect x="6" y="14" width="2" height="7" rx="1"/><rect x="10" y="11" width="5" height="3" rx="1"/><rect x="3" y="18" width="7" height="3" rx="1.5"/></svg>',
+  shotgun:  '<svg viewBox="0 0 32 32" fill="currentColor"><rect x="1" y="14" width="20" height="5" rx="2"/><path d="M21 14.5 L30 12 L30 19 L21 18.5 Z"/><rect x="4" y="19" width="5" height="5" rx="2"/><circle cx="6" cy="14.5" r="1"/><circle cx="10" cy="14.5" r="1"/></svg>',
+  sniper:   '<svg viewBox="0 0 32 32" fill="currentColor"><rect x="1" y="15" width="24" height="3" rx="1"/><path d="M25 15.5 L31 14 L31 18 L25 16.5 Z"/><rect x="10" y="10" width="7" height="5" rx="1.5"/><rect x="4" y="18" width="6" height="2" rx="1"/></svg>',
+  smg:      '<svg viewBox="0 0 32 32" fill="currentColor"><rect x="1" y="13" width="15" height="5" rx="1.5"/><path d="M16 13.5 L26 11 L26 18 L16 17.5 Z"/><rect x="4" y="18" width="3.5" height="5" rx="1.5"/><rect x="10" y="11" width="4" height="2" rx="0.5"/></svg>'
+};
+var FAV_CAT_LABELS = { pistol:'Pistols', rifle:'Rifles', shotgun:'Shotguns', sniper:'Snipers', smg:'SMGs' };
+var FAV_ORDER = ['pistol','rifle','shotgun','sniper','smg'];
+
+/* Build and render the whole page */
+function renderFavPage() {
+  var container = document.getElementById('favPageContent');
+  var user = getSession();
+
+  /* NOT LOGGED IN */
+  if (!user) {
+    container.innerHTML =
+      '<div class="fav-login-banner">' +
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>' +
+        '<h2>Login Required</h2>' +
+        '<p>You need to be logged in to view your saved favourites. Create a free account or log in to start saving guns.</p>' +
+        '<button class="fav-login-btn" onclick="openLoginModal()">→ Login to View</button>' +
+      '</div>';
+    return;
+  }
+
+  var favs = getFavs();
+
+  /* NO FAVOURITES */
+  if (!favs || !favs.length) {
+    container.innerHTML =
+      '<div class="fav-empty">' +
+        '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>' +
+        '<h2>No Favourites Yet</h2>' +
+        '<p>You haven\'t saved any guns yet. Browse the arsenal, and tap ♥ on any gun to save it here.</p>' +
+        '<a href="index.html">⚔ Browse Arsenal</a>' +
+      '</div>';
+    return;
+  }
+
+  /* Group by category */
+  var groups = {};
+  favs.forEach(function(g){
+    var cat = (g.category || 'pistol').toLowerCase().replace(/s$/,'').replace(/sniper rifle/,'sniper');
+    if (!groups[cat]) groups[cat] = [];
+    groups[cat].push(g);
+  });
+
+  /* Count total */
+  var total = favs.length;
+  var catCount = Object.keys(groups).length;
+
+  /* Stats bar */
+  var statsHtml =
+    '<div class="fav-stats-bar">' +
+      '<div class="fav-stats-inner">' +
+        '<div class="fav-stat-pill">♥ Total Saved: <strong>' + total + '</strong></div>' +
+        '<div class="fav-stat-pill">📂 Categories: <strong>' + catCount + '</strong></div>' +
+        '<div class="fav-stat-pill">👤 Account: <strong>' + user.username + '</strong></div>' +
+      '</div>' +
+    '</div>';
+
+  /* Build category blocks */
+  var blocksHtml = '<div class="fav-content">';
+  FAV_ORDER.forEach(function(cat){
+    var guns = groups[cat];
+    if (!guns || !guns.length) return;
+    var icon  = FAV_CAT_ICONS[cat] || '';
+    var label = FAV_CAT_LABELS[cat] || cat;
+
+    blocksHtml += '<div class="fav-cat-block">';
+    /* Category heading */
+    blocksHtml +=
+      '<div class="fav-cat-heading">' +
+        '<div class="fav-cat-icon-box">' + icon + '</div>' +
+        '<span class="fav-cat-title">' + label + '</span>' +
+        '<span class="fav-cat-count">(' + guns.length + ')</span>' +
+      '</div>';
+
+    /* Cards */
+    blocksHtml += '<div class="fav-cards-grid">';
+    guns.forEach(function(g){
+      /* Build specs table rows */
+      var specsHtml = '';
+      if (g.specs && typeof g.specs === 'object') {
+        Object.keys(g.specs).forEach(function(k){
+          specsHtml += '<tr><td>' + k + '</td><td>' + g.specs[k] + '</td></tr>';
+        });
+      }
+
+      blocksHtml +=
+        '<div class="fav-gun-card" data-gun-id="' + g.id + '">' +
+          '<div class="fav-card-img">' +
+            '<img src="' + g.img + '" alt="' + g.name + '" onerror="this.style.opacity=\'0.2\'"/>' +
+            '<span class="fav-card-badge">' + (g.category || cat).toUpperCase() + '</span>' +
+            '<button class="fav-card-rm" onclick="removeFavCard(\'' + g.id + '\');event.stopPropagation();" title="Remove from favourites">' +
+              '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>' +
+            '</button>' +
+          '</div>' +
+          '<div class="fav-card-body">' +
+            '<div class="fav-card-name">' + g.name + '</div>' +
+            (specsHtml ? '<table class="fav-card-table">' + specsHtml + '</table>' : '') +
+            '<button class="fav-card-view" onclick="viewGunDetail(\'' + g.id.replace(/'/g,"\\'") + '\')">View Details →</button>' +
+          '</div>' +
+        '</div>';
+    });
+    blocksHtml += '</div>'; /* end fav-cards-grid */
+    blocksHtml += '</div>'; /* end fav-cat-block */
+  });
+  blocksHtml += '</div>'; /* end fav-content */
+
+  container.innerHTML = statsHtml + blocksHtml;
+}
+
+/* Remove a gun from favourites directly from this page */
+function removeFavCard(id) {
+  var favs = getFavs().filter(function(f){ return f.id !== id; });
+  saveFavs(favs);
+  /* Animate card out */
+  var card = document.querySelector('[data-gun-id="' + id + '"]');
+  if (card) {
+    card.style.transition = 'transform .3s, opacity .3s';
+    card.style.transform  = 'scale(0.85)';
+    card.style.opacity    = '0';
+    setTimeout(function(){
+      renderFavPage(); /* re-render after removal */
+    }, 300);
+  }
+}
+
+/* Click "View Details" → go to gun-detail.html */
+function viewGunDetail(id) {
+  var favs = getFavs();
+  var gun  = favs.find(function(f){ return f.id === id; });
+  if (!gun) return;
+  var gunData = {
+    name:     gun.name,
+    category: gun.category,
+    img:      gun.img,
+    specs:    gun.specs,
+    desc:     ''
+  };
+  sessionStorage.setItem('wv_gun', JSON.stringify(gunData));
+  window.location.href = 'gun-detail.html';
+}
+
+/* Render on page load */
+document.addEventListener('DOMContentLoaded', function(){
+  renderFavPage();
+});
+</script>
+</body>
+</html>

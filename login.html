@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Enter — WEAPON VERSE</title>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    /* ══════════════════════════════════════════
+       ENTRY GATE — Full Split Screen
+    ══════════════════════════════════════════ */
+    html, body { height: 100%; margin: 0; overflow: hidden; }
+
+    /* Particle canvas behind everything */
+    #bgCanvas {
+      position: fixed; inset: 0; z-index: 0;
+      pointer-events: none;
+    }
+
+    .gate-wrap {
+      position: relative; z-index: 1;
+      display: flex;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+
+    /* ══ LEFT — Brand / Info panel ══ */
+    .gate-left {
+      flex: 1.1;
+      background: linear-gradient(145deg, #040804 0%, #0d130d 40%, #182618 100%);
+      border-right: 1px solid rgba(74,124,47,.25);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 60px 64px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Decorative grid lines */
+    .gate-left::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(74,124,47,.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(74,124,47,.04) 1px, transparent 1px);
+      background-size: 48px 48px;
+      pointer-events: none;
+    }
+    /* Radial glow */
+    .gate-left::after {
+      content: '';
+      position: absolute;
+      top: -20%; left: -10%;
+      width: 70%; height: 70%;
+      background: radial-gradient(ellipse, rgba(74,124,47,.1) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    /* Logo */
+    .gate-logo {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 52px;
+      animation: fadeUp .6s ease both;
+    }
+    .gate-logo-icon {
+      width: 52px; height: 52px;
+      background: rgba(74,124,47,.15);
+      border: 2px solid rgba(74,124,47,.5);
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.6rem;
+      box-shadow: 0 0 24px rgba(74,124,47,.2);
+    }
+    .gate-logo-text {
+      font-family: var(--fh);
+      font-size: 1.4rem;
+      font-weight: 800;
+      letter-spacing: 5px;
+      color: var(--gl);
+      text-transform: uppercase;
+    }
+    .gate-logo-text span {
+      display: block;
+      font-size: .62rem;
+      letter-spacing: 4px;
+      color: var(--grey);
+      font-weight: 600;
+      margin-top: 2px;
+    }
+
+    /* Tagline */
+    .gate-tagline {
+      animation: fadeUp .6s .1s ease both;
+      margin-bottom: 36px;
+    }
+    .gate-tagline h1 {
+      font-family: var(--fh);
+      font-size: clamp(2.4rem, 4.5vw, 4rem);
+      font-weight: 800;
+      letter-spacing: 6px;
+      line-height: 1.05;
+      color: var(--white);
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .gate-tagline h1 span {
+      color: var(--gl);
+      display: block;
+    }
+    .gate-tagline p {
+      font-family: var(--fb);
+      font-size: .95rem;
+      color: var(--grey-l);
+      line-height: 1.8;
+      max-width: 440px;
+      margin-top: 18px;
+    }
+
+    /* Feature list */
+    .gate-features {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-bottom: 44px;
+      animation: fadeUp .6s .2s ease both;
+    }
+    .gate-feature {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      font-family: var(--fb);
+      font-size: .88rem;
+      color: var(--grey-l);
+    }
+    .gate-feature-dot {
+      width: 8px; height: 8px;
+      background: var(--ga);
+      border-radius: 50%;
+      flex-shrink: 0;
+      box-shadow: 0 0 8px rgba(74,124,47,.6);
+    }
+    .gate-feature strong { color: var(--white); margin-right: 4px; }
+
+    /* Stats row */
+    .gate-stats {
+      display: flex;
+      gap: 32px;
+      animation: fadeUp .6s .3s ease both;
+    }
+    .gate-stat-item { display: flex; flex-direction: column; gap: 3px; }
+    .gate-stat-num {
+      font-family: var(--fh);
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: var(--gl);
+      letter-spacing: 2px;
+      line-height: 1;
+    }
+    .gate-stat-lbl {
+      font-size: .65rem;
+      font-weight: 700;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--grey);
+    }
+
+    /* Bottom disclaimer */
+    .gate-disclaimer {
+      position: absolute;
+      bottom: 28px; left: 64px;
+      font-size: .72rem;
+      color: var(--grey);
+      letter-spacing: .5px;
+      opacity: .7;
+      animation: fadeIn 1s .8s ease both;
+    }
+
+    /* ══ RIGHT — Form panel ══ */
+    .gate-right {
+      flex: 0 0 480px;
+      background: #080c08;
+      border-left: 1px solid rgba(45,80,22,.4);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 48px 48px;
+      overflow-y: auto;
+      position: relative;
+    }
+
+    /* Subtle top bar */
+    .gate-right::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--ga), transparent);
+    }
+
+    /* Tab switcher: Login / Register */
+    .gate-tabs {
+      display: flex;
+      gap: 0;
+      background: var(--gd);
+      border: 1px solid var(--gm);
+      border-radius: 6px;
+      padding: 3px;
+      margin-bottom: 32px;
+      animation: fadeIn .5s ease both;
+    }
+    .gate-tab {
+      flex: 1;
+      background: none;
+      border: none;
+      border-radius: 4px;
+      color: var(--grey);
+      font-family: var(--fh);
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 10px 0;
+      cursor: pointer;
+      transition: background .22s, color .22s, box-shadow .22s;
+    }
+    .gate-tab.active {
+      background: var(--gm);
+      color: var(--white);
+      box-shadow: 0 3px 12px rgba(74,124,47,.3);
+    }
+
+    /* Form headings */
+    .gate-form-head {
+      margin-bottom: 26px;
+      animation: fadeUp .4s ease both;
+    }
+    .gate-form-head h2 {
+      font-family: var(--fh);
+      font-size: 1.9rem;
+      font-weight: 800;
+      letter-spacing: 4px;
+      color: var(--white);
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .gate-form-head p {
+      font-size: .82rem;
+      color: var(--grey);
+      line-height: 1.6;
+    }
+
+    /* Form panels */
+    .gate-panel { display: none; animation: fadeUp .3s ease both; }
+    .gate-panel.active { display: block; }
+
+    /* Form fields */
+    .gf-group {
+      margin-bottom: 17px;
+    }
+    .gf-group label {
+      display: block;
+      font-size: .7rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--grey);
+      margin-bottom: 7px;
+    }
+    .gf-group input {
+      width: 100%;
+      background: var(--gd);
+      border: 1.5px solid var(--gm);
+      color: var(--white);
+      font-family: var(--fb);
+      font-size: .95rem;
+      padding: 11px 14px;
+      border-radius: 5px;
+      outline: none;
+      box-sizing: border-box;
+      transition: border-color .22s, box-shadow .22s;
+    }
+    .gf-group input:focus {
+      border-color: var(--ga);
+      box-shadow: 0 0 0 3px rgba(74,124,47,.2);
+    }
+    .gf-group input::placeholder { color: var(--grey); opacity: .6; }
+    .gf-err {
+      font-size: .72rem;
+      color: #e05555;
+      margin-top: 5px;
+      display: none;
+      letter-spacing: .3px;
+    }
+    .gf-err.show { display: block; }
+
+    /* Two-column row for name fields */
+    .gf-row { display: flex; gap: 12px; }
+    .gf-row .gf-group { flex: 1; }
+
+    /* Submit button */
+    .gf-btn {
+      width: 100%;
+      background: var(--gm);
+      color: var(--white);
+      border: 1.5px solid var(--ga);
+      font-family: var(--fh);
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      padding: 13px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: background .22s, transform .18s, box-shadow .22s;
+    }
+    .gf-btn:hover {
+      background: var(--ga);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 22px rgba(74,124,47,.4);
+    }
+    .gf-btn:active { transform: translateY(0); }
+
+    /* Success state */
+    .gf-btn.loading {
+      opacity: .7; pointer-events: none; cursor: wait;
+    }
+
+    /* Switch text */
+    .gf-switch {
+      text-align: center;
+      margin-top: 18px;
+      font-size: .82rem;
+      color: var(--grey);
+    }
+    .gf-switch button {
+      background: none; border: none;
+      color: var(--gl); font-weight: 700;
+      cursor: pointer; font-size: .82rem;
+      padding: 0;
+      transition: color .2s;
+    }
+    .gf-switch button:hover { color: var(--white); }
+
+    /* ══ Success overlay (shown after login/register) ══ */
+    #gateSuccess {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      gap: 14px;
+      animation: fadeUp .4s ease;
+    }
+    #gateSuccess.show { display: flex; }
+    .gate-success-icon {
+      width: 64px; height: 64px;
+      background: rgba(74,124,47,.15);
+      border: 2px solid rgba(74,124,47,.5);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.8rem;
+      margin-bottom: 8px;
+      animation: successPop .5s cubic-bezier(.34,1.56,.64,1) both;
+    }
+    @keyframes successPop {
+      from { transform: scale(0); opacity: 0; }
+      to   { transform: scale(1); opacity: 1; }
+    }
+    .gate-success-title {
+      font-family: var(--fh); font-size: 1.6rem;
+      font-weight: 800; letter-spacing: 4px;
+      color: var(--white); text-transform: uppercase;
+    }
+    .gate-success-sub { font-size: .85rem; color: var(--grey); line-height: 1.6; }
+    .gate-success-bar {
+      width: 220px; height: 4px;
+      background: var(--gd); border-radius: 2px;
+      overflow: hidden; margin-top: 6px;
+    }
+    .gate-success-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--gm), var(--gl));
+      border-radius: 2px;
+      width: 0%;
+      animation: loadBar 2s ease forwards;
+    }
+    @keyframes loadBar { from { width: 0%; } to { width: 100%; } }
+
+    /* ══ Responsive ══ */
+    @media (max-width: 900px) {
+      html, body { overflow: auto; }
+      .gate-wrap  { flex-direction: column; min-height: 100vh; }
+      .gate-left  { padding: 40px 28px; flex: none; }
+      .gate-right { flex: none; padding: 36px 24px; border-left: none; border-top: 1px solid var(--gm); }
+      .gate-stats { gap: 20px; }
+      .gate-disclaimer { left: 28px; }
+    }
+
+    /* Keyframes (shared from style.css might not have slideDown) */
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="bgCanvas"></canvas>
+
+<div class="gate-wrap">
+
+  <!-- ══ LEFT: Brand Panel ══ -->
+  <div class="gate-left">
+
+    <!-- Logo -->
+    <div class="gate-logo">
+      <div class="gate-logo-icon">⚔</div>
+      <div class="gate-logo-text">
+        Weapon Verse
+        <span>Educational Firearms Reference</span>
+      </div>
+    </div>
+
+    <!-- Tagline -->
+    <div class="gate-tagline">
+      <h1>
+        The World's
+        <span>Firearms Encyclopedia</span>
+      </h1>
+      <p>
+        An in-depth educational guide covering 48 iconic firearms across 5 categories —
+        history, specifications, design, and military significance. Built for students and enthusiasts.
+      </p>
+    </div>
+
+    <!-- Features -->
+    <div class="gate-features">
+      <div class="gate-feature">
+        <div class="gate-feature-dot"></div>
+        <div><strong>48 Firearms</strong> covered across Pistols, Rifles, Shotguns, Snipers & SMGs</div>
+      </div>
+      <div class="gate-feature">
+        <div class="gate-feature-dot"></div>
+        <div><strong>Full Specifications</strong> — calibre, weight, range, magazine, origin</div>
+      </div>
+      <div class="gate-feature">
+        <div class="gate-feature-dot"></div>
+        <div><strong>Compare Any Two Guns</strong> side-by-side across any category</div>
+      </div>
+      <div class="gate-feature">
+        <div class="gate-feature-dot"></div>
+        <div><strong>Personal Favourites</strong> — save your collection, per account</div>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="gate-stats">
+      <div class="gate-stat-item">
+        <span class="gate-stat-num">48</span>
+        <span class="gate-stat-lbl">Firearms</span>
+      </div>
+      <div class="gate-stat-item">
+        <span class="gate-stat-num">5</span>
+        <span class="gate-stat-lbl">Categories</span>
+      </div>
+      <div class="gate-stat-item">
+        <span class="gate-stat-num">100%</span>
+        <span class="gate-stat-lbl">Free Access</span>
+      </div>
+    </div>
+
+    <div class="gate-disclaimer">
+      ⚠ For educational and academic purposes only. &copy; 2025 Weapon Verse
+    </div>
+  </div>
+
+  <!-- ══ RIGHT: Form Panel ══ -->
+  <div class="gate-right">
+
+    <!-- Tab switcher -->
+    <div class="gate-tabs" id="gateTabs">
+      <button class="gate-tab active" id="tabLogin"    onclick="showTab('login')">Login</button>
+      <button class="gate-tab"        id="tabRegister" onclick="showTab('register')">Register</button>
+    </div>
+
+    <!-- Forms -->
+    <div id="gateForms">
+
+      <!-- ── Login Form ── -->
+      <div class="gate-panel active" id="panelLogin">
+        <div class="gate-form-head">
+          <h2>Welcome Back</h2>
+          <p>Sign in to your account to access the full arsenal.</p>
+        </div>
+        <div class="gf-group">
+          <label>Username</label>
+          <input type="text" id="glUser" placeholder="Your username" autocomplete="username"/>
+          <div class="gf-err" id="glUerr"></div>
+        </div>
+        <div class="gf-group">
+          <label>Password</label>
+          <input type="password" id="glPass" placeholder="Your password" autocomplete="current-password"/>
+          <div class="gf-err" id="glPerr"></div>
+        </div>
+        <button class="gf-btn" onclick="doGateLogin()">→ Enter the Arsenal</button>
+        <div class="gf-switch">
+          No account? <button onclick="showTab('register')">Create one here</button>
+        </div>
+      </div>
+
+      <!-- ── Register Form ── -->
+      <div class="gate-panel" id="panelRegister">
+        <div class="gate-form-head">
+          <h2>Create Account</h2>
+          <p>Register for free to start exploring the full firearms database.</p>
+        </div>
+        <div class="gf-group">
+          <label>Username</label>
+          <input type="text" id="grUser" placeholder="Choose a username (min 3 chars)" autocomplete="username"/>
+          <div class="gf-err" id="grUerr"></div>
+        </div>
+        <div class="gf-group">
+          <label>Email Address</label>
+          <input type="email" id="grEmail" placeholder="Your email address" autocomplete="email"/>
+          <div class="gf-err" id="grEerr"></div>
+        </div>
+        <div class="gf-group">
+          <label>Date of Birth</label>
+          <input type="date" id="grDob"/>
+          <div class="gf-err" id="grDerr"></div>
+        </div>
+        <div class="gf-group">
+          <label>Password</label>
+          <input type="password" id="grPass" placeholder="Min 6 characters" autocomplete="new-password"/>
+          <div class="gf-err" id="grPwderr"></div>
+        </div>
+        <div class="gf-group">
+          <label>Confirm Password</label>
+          <input type="password" id="grConf" placeholder="Re-enter your password" autocomplete="new-password"/>
+          <div class="gf-err" id="grCerr"></div>
+        </div>
+        <button class="gf-btn" onclick="doGateRegister()">⚔ Join Weapon Verse</button>
+        <div class="gf-switch">
+          Already have an account? <button onclick="showTab('login')">Login here</button>
+        </div>
+      </div>
+
+    </div><!-- end gateForms -->
+
+    <!-- Success state (replaces forms on success) -->
+    <div id="gateSuccess">
+      <div class="gate-success-icon">✓</div>
+      <div class="gate-success-title" id="successTitle">Welcome!</div>
+      <div class="gate-success-sub" id="successSub">Entering the arsenal…</div>
+      <div class="gate-success-bar"><div class="gate-success-fill"></div></div>
+    </div>
+
+  </div><!-- end gate-right -->
+</div><!-- end gate-wrap -->
+
+<script src="script.js"></script>
+<script>
+/* ══════════════════════════════════════════════
+   GATE PAGE LOGIC
+══════════════════════════════════════════════ */
+
+/* ── If already logged in, go straight to home ── */
+(function(){
+  if (getSession()) window.location.replace('index.html');
+  /* Auto-switch to register tab if URL has #register */
+  if (window.location.hash === '#register') {
+    window.addEventListener('DOMContentLoaded', function(){ showTab('register'); });
+  }
+})();
+
+/* ── Tab switcher ── */
+function showTab(tab) {
+  var panels = ['panelLogin','panelRegister'];
+  var tabs   = ['tabLogin','tabRegister'];
+  panels.forEach(function(id){ document.getElementById(id).classList.remove('active'); });
+  tabs.forEach(function(id)  { document.getElementById(id).classList.remove('active'); });
+  if (tab === 'login') {
+    document.getElementById('panelLogin').classList.add('active');
+    document.getElementById('tabLogin').classList.add('active');
+  } else {
+    document.getElementById('panelRegister').classList.add('active');
+    document.getElementById('tabRegister').classList.add('active');
+  }
+}
+
+/* ── Error helpers ── */
+function gfVal(id)       { var el=document.getElementById(id); return el?el.value.trim():''; }
+function gfErr(id,msg)   { var el=document.getElementById(id); if(el){el.textContent='⚠ '+msg;el.classList.add('show');} }
+function gfClear(ids)    { ids.forEach(function(id){ var el=document.getElementById(id); if(el){el.textContent='';el.classList.remove('show');} }); }
+
+/* ── Success animation → redirect ── */
+function showSuccess(username, isNew) {
+  document.getElementById('gateTabs').style.display   = 'none';
+  document.getElementById('gateForms').style.display  = 'none';
+  var s = document.getElementById('gateSuccess');
+  s.classList.add('show');
+  document.getElementById('successTitle').textContent = isNew
+    ? 'Welcome, ' + username + '!'
+    : 'Welcome back, ' + username + '!';
+  document.getElementById('successSub').textContent = isNew
+    ? 'Account created. Loading your arsenal…'
+    : 'Login successful. Entering the arsenal…';
+  /* Redirect after 2 seconds */
+  setTimeout(function(){ window.location.href = 'index.html'; }, 2100);
+}
+
+/* ── Login ── */
+function doGateLogin() {
+  var u = gfVal('glUser'), p = gfVal('glPass');
+  gfClear(['glUerr','glPerr']);
+  var ok = true;
+  if (!u || u.length < 3) { gfErr('glUerr','Username must be at least 3 characters.'); ok=false; }
+  if (!p || p.length < 6) { gfErr('glPerr','Password must be at least 6 characters.'); ok=false; }
+  if (!ok) return;
+  var found = getUsers().find(function(x){ return x.username===u && x.password===p; });
+  if (!found) { gfErr('glUerr','Incorrect username or password.'); return; }
+  setSession(found);
+  showSuccess(found.username, false);
+}
+
+/* ── Register ── */
+function doGateRegister() {
+  var u=gfVal('grUser'), e=gfVal('grEmail'), d=gfVal('grDob'), p=gfVal('grPass'), c=gfVal('grConf');
+  gfClear(['grUerr','grEerr','grDerr','grPwderr','grCerr']);
+  var ok=true;
+  if (!u||u.length<3)         { gfErr('grUerr','Min 3 characters required.'); ok=false; }
+  if (!e||!e.includes('@'))   { gfErr('grEerr','Valid email required.'); ok=false; }
+  if (!d)                     { gfErr('grDerr','Date of birth is required.'); ok=false; }
+  if (!p||p.length<6)         { gfErr('grPwderr','Min 6 characters required.'); ok=false; }
+  if (!c||c!==p)              { gfErr('grCerr','Passwords do not match.'); ok=false; }
+  if (!ok) return;
+  var users = getUsers();
+  if (users.find(function(x){ return x.username===u; })) { gfErr('grUerr','Username already taken. Choose another.'); return; }
+  var newUser = { username:u, email:e, dob:d, password:p };
+  users.push(newUser);
+  saveUsers(users);
+  setSession(newUser);
+  showSuccess(u, true);
+}
+
+/* ── Enter key support ── */
+document.addEventListener('keydown', function(e){
+  if (e.key !== 'Enter') return;
+  var loginActive = document.getElementById('panelLogin').classList.contains('active');
+  if (loginActive) doGateLogin();
+  else doGateRegister();
+});
+
+/* ══════════════════════════════════════════════
+   CANVAS PARTICLE BACKGROUND
+══════════════════════════════════════════════ */
+(function(){
+  var canvas  = document.getElementById('bgCanvas');
+  var ctx     = canvas.getContext('2d');
+  var W, H, dots = [];
+
+  function resize() {
+    W = canvas.width  = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  /* Create dots */
+  for (var i = 0; i < 55; i++) {
+    dots.push({
+      x:   Math.random() * 1920,
+      y:   Math.random() * 1080,
+      r:   Math.random() * 1.4 + .4,
+      vx:  (Math.random() - .5) * .22,
+      vy:  (Math.random() - .5) * .22,
+      a:   Math.random() * .5 + .1
+    });
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    dots.forEach(function(d){
+      d.x += d.vx; d.y += d.vy;
+      if (d.x < 0) d.x = W; if (d.x > W) d.x = 0;
+      if (d.y < 0) d.y = H; if (d.y > H) d.y = 0;
+      ctx.beginPath();
+      ctx.arc(d.x, d.y, d.r, 0, Math.PI*2);
+      ctx.fillStyle = 'rgba(106,176,76,' + d.a + ')';
+      ctx.fill();
+    });
+    /* Draw faint lines between nearby dots */
+    for (var i = 0; i < dots.length; i++) {
+      for (var j = i+1; j < dots.length; j++) {
+        var dx = dots[i].x - dots[j].x;
+        var dy = dots[i].y - dots[j].y;
+        var dist = Math.sqrt(dx*dx + dy*dy);
+        if (dist < 140) {
+          ctx.beginPath();
+          ctx.moveTo(dots[i].x, dots[i].y);
+          ctx.lineTo(dots[j].x, dots[j].y);
+          ctx.strokeStyle = 'rgba(74,124,47,' + (.08 * (1 - dist/140)) + ')';
+          ctx.lineWidth = .6;
+          ctx.stroke();
+        }
+      }
+    }
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+</script>
+</body>
+</html>
