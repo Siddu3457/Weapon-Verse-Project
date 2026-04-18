@@ -21,7 +21,6 @@
       position: relative; z-index: 1;
       display: flex;
       min-height: 100vh;
-      overflow: hidden;
     }
 
     /* ══ LEFT — Brand / Info panel ══ */
@@ -391,13 +390,60 @@
     @keyframes loadBar { from { width: 0%; } to { width: 100%; } }
 
     /* ══ Responsive ══ */
+
+    /* Tablet */
+    @media (max-width: 1024px) {
+      .gate-left  { padding: 48px 40px; }
+      .gate-right { flex: 0 0 420px; padding: 44px 36px; }
+    }
+
+    /* Mobile landscape / small tablet */
     @media (max-width: 900px) {
-      html, body { overflow: auto; }
-      .gate-wrap  { flex-direction: column; min-height: 100vh; }
-      .gate-left  { padding: 40px 28px; flex: none; }
-      .gate-right { flex: none; padding: 36px 24px; border-left: none; border-top: 1px solid var(--gm); }
-      .gate-stats { gap: 20px; }
-      .gate-disclaimer { left: 28px; }
+      html, body { height: auto; overflow: auto; }
+      .gate-wrap  { flex-direction: column; min-height: 100vh; overflow: visible; }
+
+      /* Left panel — compact */
+      .gate-left  {
+        flex: none;
+        padding: 36px 24px 28px;
+        border-right: none;
+        border-bottom: 1px solid rgba(74,124,47,.2);
+      }
+      .gate-logo      { margin-bottom: 22px; }
+      .gate-tagline   { margin-bottom: 20px; }
+      .gate-tagline h1 { font-size: clamp(1.6rem, 6vw, 2.4rem); }
+      .gate-tagline p  { font-size: .88rem; margin-top: 10px; }
+      .gate-features  { gap: 10px; margin-bottom: 22px; }
+      .gate-feature   { font-size: .82rem; }
+      .gate-stats     { gap: 20px; }
+      .gate-disclaimer { position: static; margin-top: 20px; opacity: .6; }
+
+      /* Right panel — full width, always visible */
+      .gate-right {
+        flex: none;
+        width: 100%;
+        padding: 32px 24px 48px;
+        border-left: none;
+        border-top: none;
+        min-height: auto;
+        overflow-y: visible;
+      }
+      .gate-right::before { display: none; }
+    }
+
+    /* Phone portrait */
+    @media (max-width: 480px) {
+      .gate-left  { padding: 28px 18px 22px; }
+      .gate-right { padding: 24px 18px 40px; }
+      .gate-tagline h1 { font-size: 1.5rem; letter-spacing: 3px; }
+      .gate-logo-text  { font-size: 1.1rem; letter-spacing: 3px; }
+      .gate-features   { display: none; } /* hide on very small screens to save space */
+      .gate-stats      { gap: 14px; }
+      .gate-stat-num   { font-size: 1.4rem; }
+      .gate-tab        { font-size: .82rem; letter-spacing: 1px; padding: 9px 0; }
+      .gate-form-head h2 { font-size: 1.4rem; letter-spacing: 2px; }
+      .gf-group input  { font-size: .9rem; padding: 10px 12px; }
+      .gf-btn          { font-size: .95rem; letter-spacing: 2px; }
     }
 
     /* Keyframes (shared from style.css might not have slideDown) */
