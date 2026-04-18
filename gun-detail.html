@@ -226,457 +226,437 @@
     }
 
     /* ══════════════════════════════════════════════
-       COMPARE MODAL OVERLAY
+       COMPARE MODAL — Redesigned, Interactive, Premium
     ══════════════════════════════════════════════ */
-/* ================================================================
-   WEAPON VERSE — Compare Modal CSS  (v2 — paste into gun-detail.html)
-   Replace everything from the old "COMPARE MODAL OVERLAY" comment
-   block down to the end of the <style> tag with this content.
-================================================================ */
+    #cmpOverlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,.92);
+      backdrop-filter: blur(12px);
+      z-index: 700;
+      display: flex; align-items: center; justify-content: center;
+      padding: 16px;
+      opacity: 0; pointer-events: none;
+      transition: opacity .3s;
+    }
+    #cmpOverlay.open { opacity: 1; pointer-events: all; }
 
-/* ══ Overlay backdrop ══ */
-#cmpOverlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,.92);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  z-index: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 16px;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity .3s ease;
-}
-#cmpOverlay.open {
-  opacity: 1;
-  pointer-events: all;
-}
+    #cmpModal {
+      background: var(--card);
+      border: 1px solid var(--ga);
+      border-radius: 16px;
+      width: 100%; max-width: 1060px;
+      max-height: 94vh; overflow-y: auto;
+      position: relative;
+      transform: translateY(30px) scale(.97);
+      transition: transform .32s cubic-bezier(.34,1.56,.64,1);
+      box-shadow: 0 40px 100px rgba(0,0,0,.95), 0 0 60px rgba(74,124,47,.1);
+    }
+    #cmpModal::-webkit-scrollbar { width: 4px; }
+    #cmpModal::-webkit-scrollbar-track { background: var(--gd); }
+    #cmpModal::-webkit-scrollbar-thumb { background: var(--ga); border-radius: 2px; }
+    #cmpOverlay.open #cmpModal { transform: translateY(0) scale(1); }
 
-/* ══ Modal box ══ */
-#cmpModal {
-  background: var(--card);
-  border: 1px solid var(--ga);
-  border-radius: 14px;
-  width: 100%;
-  max-width: 980px;
-  max-height: 92vh;
-  overflow-y: auto;
-  position: relative;
-  transform: scale(.9) translateY(24px);
-  transition: transform .35s cubic-bezier(.34,1.56,.64,1), opacity .3s ease;
-  box-shadow: 0 40px 100px rgba(0,0,0,.95), 0 0 60px rgba(74,124,47,.1);
-}
-#cmpModal::-webkit-scrollbar { width: 4px; }
-#cmpModal::-webkit-scrollbar-track { background: var(--gd); }
-#cmpModal::-webkit-scrollbar-thumb { background: var(--ga); border-radius: 2px; }
-#cmpOverlay.open #cmpModal {
-  transform: scale(1) translateY(0);
-}
+    /* ── Header ── */
+    .cmp-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 22px 28px 20px;
+      background: linear-gradient(135deg, #080c08 0%, #182618 100%);
+      border-bottom: 1px solid var(--gm);
+      position: sticky; top: 0; z-index: 10;
+    }
+    .cmp-header-left { display: flex; align-items: center; gap: 12px; }
+    .cmp-header-icon {
+      width: 44px; height: 44px;
+      background: rgba(200,168,75,.12);
+      border: 1.5px solid rgba(200,168,75,.4);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--gold);
+    }
+    .cmp-header h2 {
+      font-family: var(--fh);
+      font-size: 1.6rem; font-weight: 800;
+      letter-spacing: 5px; color: var(--gold);
+      text-transform: uppercase;
+    }
+    .cmp-header-sub {
+      font-size: .72rem; color: var(--grey);
+      letter-spacing: .5px; margin-top: 2px;
+    }
+    .cmp-close {
+      width: 36px; height: 36px;
+      background: rgba(255,255,255,.06); border: 1px solid var(--gm);
+      border-radius: 50%; color: var(--grey-l); cursor: pointer;
+      font-size: .9rem; display: flex; align-items: center; justify-content: center;
+      transition: background .2s, color .2s, border-color .2s;
+    }
+    .cmp-close:hover { background: rgba(224,85,85,.2); border-color: #e05555; color: #e05555; }
 
-/* ══ Header ══ */
-.cmp-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 20px 26px 16px;
-  background: linear-gradient(135deg, var(--black) 0%, var(--gd) 100%);
-  border-bottom: 1px solid var(--gm);
-  position: sticky;
-  top: 0;
-  z-index: 10;
-}
-.cmp-header-left {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.cmp-header-icon {
-  width: 36px; height: 36px;
-  background: rgba(200,168,75,.12);
-  border: 1.5px solid var(--gold);
-  border-radius: 8px;
-  display: flex; align-items: center; justify-content: center;
-  color: var(--gold);
-  flex-shrink: 0;
-}
-.cmp-title {
-  font-family: var(--fh);
-  font-size: 1.55rem;
-  font-weight: 800;
-  letter-spacing: 5px;
-  color: var(--gold);
-  text-transform: uppercase;
-}
-.cmp-close {
-  width: 34px; height: 34px;
-  background: rgba(255,255,255,.05);
-  border: 1px solid var(--gm);
-  border-radius: 50%;
-  color: var(--grey-l);
-  cursor: pointer;
-  font-size: .9rem;
-  display: flex; align-items: center; justify-content: center;
-  transition: background .2s, color .2s, border-color .2s, transform .18s;
-}
-.cmp-close:hover {
-  background: var(--gm);
-  color: var(--white);
-  border-color: var(--ga);
-  transform: rotate(90deg);
-}
+    /* ── Step indicator ── */
+    .cmp-steps {
+      display: flex; align-items: center;
+      padding: 16px 28px;
+      background: rgba(0,0,0,.3);
+      border-bottom: 1px solid var(--gd);
+      gap: 0;
+    }
+    .cmp-step {
+      display: flex; align-items: center; gap: 8px;
+      font-family: var(--fh); font-size: .78rem;
+      font-weight: 700; letter-spacing: 2px;
+      text-transform: uppercase; color: var(--grey);
+      transition: color .3s;
+      flex: 1;
+    }
+    .cmp-step.done  { color: var(--gl); }
+    .cmp-step.active{ color: var(--white); }
+    .cmp-step-num {
+      width: 26px; height: 26px; border-radius: 50%;
+      background: var(--gd); border: 1.5px solid var(--gm);
+      display: flex; align-items: center; justify-content: center;
+      font-size: .72rem; font-weight: 800; color: var(--grey);
+      transition: background .3s, border-color .3s, color .3s;
+      flex-shrink: 0;
+    }
+    .cmp-step.done .cmp-step-num   { background: var(--gm); border-color: var(--ga); color: var(--white); }
+    .cmp-step.active .cmp-step-num { background: var(--gold); border-color: var(--gold); color: var(--black); }
+    .cmp-step-arrow { color: var(--gd); margin: 0 12px; font-size: .9rem; }
 
-/* ══ Selector row ══ */
-.cmp-selectors {
-  display: grid;
-  grid-template-columns: 1fr 64px 1fr;
-  gap: 0;
-  padding: 22px 26px 20px;
-  border-bottom: 1px solid rgba(45,80,22,.5);
-  align-items: start;
-}
+    /* ── Gun cards side by side ── */
+    .cmp-guns-row {
+      display: flex; gap: 0;
+      padding: 22px 28px;
+      border-bottom: 1px solid var(--gd);
+    }
+    .cmp-gun-slot {
+      flex: 1; position: relative;
+    }
+    .cmp-gun-slot:first-child { padding-right: 20px; border-right: 1px solid var(--gd); }
+    .cmp-gun-slot:last-child  { padding-left: 20px; }
 
-/* ── Slot labels ── */
-.cmp-slot { display: flex; flex-direction: column; gap: 10px; }
-.cmp-slot-label {
-  display: flex; align-items: center; gap: 7px;
-  font-family: var(--fb);
-  font-size: .65rem;
-  font-weight: 700;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  color: var(--grey);
-}
-.cmp-slot-dot {
-  width: 7px; height: 7px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
+    .cmp-slot-label {
+      font-family: var(--fh); font-size: .68rem; font-weight: 700;
+      letter-spacing: 3px; color: var(--grey); text-transform: uppercase;
+      margin-bottom: 12px; display: flex; align-items: center; gap: 6px;
+    }
+    .cmp-slot-label-a { color: var(--gl); }
+    .cmp-slot-label-b { color: var(--gold); }
 
-/* ── Chosen gun card ── */
-.cmp-chosen {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 14px;
-  border-radius: 10px;
-  border: 1.5px solid var(--gm);
-  background: var(--gd);
-  min-height: 74px;
-  transition: border-color .25s, box-shadow .25s;
-}
-.cmp-chosen-a { border-color: rgba(106,176,76,.5); }
-.cmp-chosen-a:hover { border-color: var(--gl); box-shadow: 0 0 20px rgba(106,176,76,.12); }
-.cmp-chosen-b { border-color: rgba(200,168,75,.5); }
-.cmp-chosen-b:hover { border-color: var(--gold); box-shadow: 0 0 20px rgba(200,168,75,.12); }
+    /* Locked/filled gun display card */
+    .cmp-gun-display {
+      display: flex; align-items: center; gap: 14px;
+      background: var(--gd); border: 1.5px solid var(--gm);
+      border-radius: 10px; padding: 14px;
+      transition: border-color .25s;
+    }
+    .cmp-gun-display.gun-a { border-color: rgba(106,176,76,.5); }
+    .cmp-gun-display.gun-b-filled { border-color: rgba(200,168,75,.5); }
 
-.cmp-chosen-img {
-  width: 80px; height: 52px;
-  background: rgba(0,0,0,.5);
-  border: 1px solid var(--gm);
-  border-radius: 6px;
-  display: flex; align-items: center; justify-content: center;
-  overflow: hidden;
-  flex-shrink: 0;
-}
-.cmp-chosen-img img {
-  width: 100%; height: 100%;
-  object-fit: contain;
-  padding: 4px;
-  filter: brightness(.9);
-  transition: filter .3s;
-}
-.cmp-chosen:hover .cmp-chosen-img img { filter: brightness(1.05); }
+    .cmp-gun-thumb {
+      width: 80px; height: 54px;
+      object-fit: contain; background: var(--black);
+      border-radius: 5px; padding: 5px; flex-shrink: 0;
+      border: 1px solid var(--gm);
+    }
+    .cmp-gun-meta { flex: 1; min-width: 0; }
+    .cmp-gun-meta-name {
+      font-family: var(--fh); font-size: 1.05rem;
+      font-weight: 700; letter-spacing: 2px;
+      color: var(--white); text-transform: uppercase;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .cmp-gun-meta-cat {
+      font-size: .62rem; letter-spacing: 2px;
+      color: var(--gl); text-transform: uppercase; margin-top: 3px;
+    }
+    .cmp-gun-meta-cat-b { color: var(--gold); }
+    .cmp-lock-badge {
+      font-family: var(--fb); font-size: .6rem; font-weight: 700;
+      letter-spacing: 1px; padding: 2px 7px; border-radius: 10px;
+      background: rgba(106,176,76,.12); border: 1px solid rgba(106,176,76,.3);
+      color: var(--gl); text-transform: uppercase; flex-shrink: 0;
+    }
+    .cmp-change-btn {
+      background: rgba(200,168,75,.1); border: 1px solid rgba(200,168,75,.4);
+      color: var(--gold); font-family: var(--fb); font-size: .72rem;
+      font-weight: 600; padding: 5px 12px; border-radius: 5px; cursor: pointer;
+      transition: background .2s, border-color .2s; flex-shrink: 0;
+      white-space: nowrap;
+    }
+    .cmp-change-btn:hover { background: rgba(200,168,75,.2); border-color: var(--gold); }
 
-.cmp-chosen-info { flex: 1; min-width: 0; }
-.cmp-chosen-name {
-  font-family: var(--fh);
-  font-size: 1rem; font-weight: 800;
-  letter-spacing: 2px; text-transform: uppercase;
-  color: var(--white);
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-.cmp-chosen-cat {
-  font-size: .6rem; letter-spacing: 2px;
-  text-transform: uppercase; color: var(--gl);
-  margin-top: 3px;
-}
-.cmp-locked-badge {
-  flex-shrink: 0;
-  background: rgba(106,176,76,.1);
-  border: 1px solid rgba(106,176,76,.3);
-  color: var(--gl);
-  font-family: var(--fb); font-size: .58rem; font-weight: 700;
-  letter-spacing: 1.5px; text-transform: uppercase;
-  padding: 3px 8px; border-radius: 4px;
-}
-.cmp-change-btn {
-  flex-shrink: 0;
-  background: none;
-  border: 1px solid var(--gm);
-  color: var(--grey-l);
-  font-family: var(--fb); font-size: .65rem; font-weight: 700;
-  letter-spacing: 1px; text-transform: uppercase;
-  padding: 5px 10px; border-radius: 4px;
-  cursor: pointer;
-  transition: border-color .18s, color .18s, background .18s;
-}
-.cmp-change-btn:hover {
-  border-color: var(--gold); color: var(--gold);
-  background: rgba(200,168,75,.08);
-}
+    /* VS badge between the two slots */
+    .cmp-vs-badge {
+      display: flex; align-items: center; justify-content: center;
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 36px; height: 36px;
+      background: var(--gold);
+      border-radius: 50%; z-index: 5;
+      font-family: var(--fh); font-size: .85rem;
+      font-weight: 800; color: var(--black);
+      box-shadow: 0 0 18px rgba(200,168,75,.5);
+      pointer-events: none;
+    }
 
-/* ── VS column ── */
-.cmp-vs-col {
-  display: flex; align-items: center; justify-content: center;
-  padding-top: 26px;
-}
-.cmp-vs-badge {
-  width: 46px; height: 46px;
-  border-radius: 50%;
-  background: rgba(200,168,75,.08);
-  border: 2px solid rgba(200,168,75,.35);
-  display: flex; align-items: center; justify-content: center;
-  font-family: var(--fh);
-  font-size: 1.25rem; font-weight: 800;
-  letter-spacing: 2px; color: var(--gold);
-  transition: border-color .3s, box-shadow .3s, transform .3s;
-}
-#cmpOverlay.open .cmp-vs-badge {
-  animation: vsPulse 2.5s ease-in-out infinite;
-}
-@keyframes vsPulse {
-  0%,100% { box-shadow: 0 0 0 0 rgba(200,168,75,.25); }
-  50%      { box-shadow: 0 0 0 8px rgba(200,168,75,.0); }
-}
+    /* ── Gun B Picker ── */
+    .cmp-picker-wrap {
+      display: none;
+      flex-direction: column; gap: 10px;
+      margin-top: 12px;
+    }
+    .cmp-picker-wrap.open { display: flex; }
 
-/* ══ CATEGORY CHIPS ══ */
-.cmp-picker { display: flex; flex-direction: column; gap: 8px; }
+    .cmp-picker-title {
+      font-family: var(--fh); font-size: .7rem; font-weight: 700;
+      letter-spacing: 2px; color: var(--gold); text-transform: uppercase;
+      margin-bottom: 2px;
+    }
+    .cmp-cat-grid {
+      display: flex; flex-wrap: wrap; gap: 7px;
+    }
+    .cmp-cat-pill {
+      display: flex; align-items: center; gap: 6px;
+      background: var(--gd); border: 1.5px solid var(--gm);
+      color: var(--grey-l); font-family: var(--fb); font-size: .75rem;
+      font-weight: 600; padding: 7px 14px; border-radius: 20px;
+      cursor: pointer; transition: background .2s, border-color .2s, color .2s;
+      white-space: nowrap; letter-spacing: .5px;
+    }
+    .cmp-cat-pill:hover   { background: var(--gm); border-color: var(--ga); color: var(--white); }
+    .cmp-cat-pill.sel-cat { background: var(--gm); border-color: var(--ga); color: var(--white); }
+    .cmp-cat-pill-icon { width: 16px; height: 16px; display: flex; }
+    .cmp-cat-pill-icon svg { width: 100%; height: 100%; }
 
-.cmp-cat-chips {
-  display: flex; flex-wrap: wrap; gap: 6px;
-}
-.cmp-cat-chip {
-  display: flex; align-items: center; gap: 5px;
-  padding: 5px 11px; border-radius: 20px;
-  border: 1.5px solid var(--gm);
-  background: rgba(45,80,22,.15);
-  color: var(--grey-l);
-  font-family: var(--fb); font-size: .68rem; font-weight: 700;
-  letter-spacing: 1px; text-transform: uppercase;
-  cursor: pointer;
-  transition: border-color .2s, background .2s, color .2s,
-              transform .18s, box-shadow .2s;
-  outline: none;
-}
-.cmp-cat-chip:hover {
-  transform: translateY(-2px);
-}
-.cmp-cat-chip.active {
-  transform: translateY(-1px);
-}
-.cmp-cat-chip-icon {
-  font-size: 12px; line-height: 1; flex-shrink: 0;
-}
+    .cmp-gun-list {
+      display: none;
+      flex-direction: column; gap: 5px;
+      max-height: 200px; overflow-y: auto;
+    }
+    .cmp-gun-list.open { display: flex; }
+    .cmp-gun-list::-webkit-scrollbar { width: 3px; }
+    .cmp-gun-list::-webkit-scrollbar-thumb { background: var(--ga); border-radius: 2px; }
 
-/* ══ GUN LIST ══ */
-.cmp-gun-list-wrap {
-  animation: listSlideIn .22s ease both;
-}
-@keyframes listSlideIn {
-  from { opacity: 0; transform: translateY(-6px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-.cmp-gun-list {
-  display: flex; flex-direction: column; gap: 3px;
-  max-height: 176px; overflow-y: auto;
-  background: rgba(0,0,0,.35);
-  border: 1px solid var(--gm);
-  border-radius: 8px;
-  padding: 4px;
-}
-.cmp-gun-list::-webkit-scrollbar { width: 3px; }
-.cmp-gun-list::-webkit-scrollbar-thumb { background: var(--ga); border-radius: 2px; }
+    .cmp-gun-item {
+      display: flex; align-items: center; gap: 10px;
+      background: var(--gd); border: 1.5px solid var(--gm);
+      padding: 9px 12px; border-radius: 7px;
+      cursor: pointer;
+      transition: background .18s, border-color .18s, transform .15s;
+    }
+    .cmp-gun-item:hover { background: var(--green-mid,#2d5016); border-color: var(--ga); transform: translateX(3px); }
+    .cmp-gun-item img {
+      width: 60px; height: 36px; object-fit: contain;
+      background: var(--black); border-radius: 3px; padding: 3px; flex-shrink: 0;
+    }
+    .cmp-gun-item-name {
+      font-family: var(--fh); font-size: .9rem; font-weight: 700;
+      letter-spacing: 1.5px; color: var(--white); text-transform: uppercase;
+    }
 
-.cmp-gun-item {
-  display: flex; align-items: center; gap: 9px;
-  padding: 7px 10px; border-radius: 6px;
-  cursor: pointer;
-  border: 1px solid transparent;
-  transition: background .16s, border-color .16s, transform .16s;
-}
-.cmp-gun-item:hover {
-  background: rgba(74,124,47,.18);
-  border-color: rgba(74,124,47,.35);
-  transform: translateX(3px);
-}
-.cmp-gun-item.selected {
-  background: rgba(106,176,76,.14);
-  border-color: var(--gl);
-}
-.cmp-gun-item-emoji {
-  font-size: 14px; width: 20px; text-align: center; flex-shrink: 0;
-  line-height: 1;
-}
-.cmp-gun-item-name {
-  flex: 1;
-  font-family: var(--fb); font-size: .78rem; font-weight: 600;
-  color: var(--white); letter-spacing: .3px;
-}
-.cmp-gun-item-check {
-  width: 16px; height: 16px; border-radius: 50%;
-  background: var(--gl);
-  display: none; align-items: center; justify-content: center;
-  font-size: 9px; color: var(--black); font-weight: 700;
-  flex-shrink: 0;
-}
-.cmp-gun-item.selected .cmp-gun-item-check { display: flex; }
+    /* ── Comparison Table ── */
+    .cmp-table-wrap {
+      padding: 0 28px 28px;
+      display: none;
+    }
+    .cmp-table-wrap.show { display: block; }
 
-/* ══ CONFIRM BUTTON ══ */
-.cmp-confirm-btn {
-  display: flex; align-items: center; justify-content: center; gap: 7px;
-  background: rgba(200,168,75,.09);
-  border: 1.5px solid var(--gold);
-  color: var(--gold);
-  font-family: var(--fh); font-size: .95rem; font-weight: 700;
-  letter-spacing: 2px; text-transform: uppercase;
-  padding: 9px 16px; border-radius: 6px;
-  cursor: pointer;
-  transition: background .22s, color .22s, transform .18s, box-shadow .22s;
-}
-.cmp-confirm-btn:hover:not(:disabled) {
-  background: rgba(200,168,75,.2);
-  color: #ffe082;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 18px rgba(200,168,75,.22);
-}
-.cmp-confirm-btn:disabled {
-  opacity: .32; cursor: not-allowed; transform: none;
-}
+    .cmp-table-title {
+      font-family: var(--fh); font-size: .85rem; font-weight: 700;
+      letter-spacing: 4px; color: var(--grey); text-transform: uppercase;
+      padding: 18px 0 12px;
+      border-top: 1px solid var(--gd);
+      display: flex; align-items: center; gap: 10px;
+    }
+    .cmp-table-title::after {
+      content: ''; flex: 1; height: 1px; background: var(--gd);
+    }
 
-/* ══ RESULTS AREA ══ */
-.cmp-results { padding: 0 26px 26px; }
+    /* Header row of table */
+    .cmp-tbl-head {
+      display: grid;
+      grid-template-columns: 150px 1fr 1fr;
+      background: var(--gd);
+      border: 1px solid var(--gm);
+      border-radius: 8px 8px 0 0;
+      overflow: hidden;
+      margin-bottom: 2px;
+    }
+    .cmp-tbl-th {
+      padding: 12px 14px;
+      display: flex; flex-direction: column; align-items: center;
+      gap: 6px; border-right: 1px solid var(--gm);
+    }
+    .cmp-tbl-th:first-child { align-items: flex-start; }
+    .cmp-tbl-th:last-child  { border-right: none; }
+    .cmp-tbl-th img {
+      width: 80px; height: 52px;
+      object-fit: contain; background: var(--black);
+      border-radius: 4px; padding: 4px; border: 1px solid var(--gm);
+    }
+    .cmp-tbl-th-name {
+      font-family: var(--fh); font-size: .95rem; font-weight: 800;
+      letter-spacing: 2px; color: var(--white); text-transform: uppercase;
+      text-align: center;
+    }
+    .cmp-tbl-th-cat {
+      font-size: .6rem; letter-spacing: 2px; text-transform: uppercase;
+      padding: 2px 8px; border-radius: 10px; border: 1px solid;
+      background: rgba(0,0,0,.3);
+    }
+    .cmp-tbl-label {
+      font-family: var(--fh); font-size: .65rem; font-weight: 700;
+      letter-spacing: 3px; color: var(--grey); text-transform: uppercase;
+      padding-top: 10px;
+    }
 
-/* Empty state */
-.cmp-empty {
-  text-align: center; padding: 38px 20px;
-  color: var(--grey); font-size: .88rem; line-height: 1.75;
-}
-.cmp-empty-icon {
-  margin: 0 auto 14px;
-  width: 52px; height: 52px;
-  display: flex; align-items: center; justify-content: center;
-  color: var(--gold); opacity: .22;
-}
-.cmp-empty strong { color: var(--grey-l); }
+    /* Data rows */
+    .cmp-tbl-body { border: 1px solid var(--gm); border-top: none; border-radius: 0 0 8px 8px; overflow: hidden; }
+    .cmp-tbl-row {
+      display: grid; grid-template-columns: 150px 1fr 1fr;
+      border-bottom: 1px solid var(--tr-bdr);
+      transition: background .15s;
+    }
+    .cmp-tbl-row:last-child { border-bottom: none; }
+    .cmp-tbl-row:nth-child(odd)  { background: var(--tr-odd); }
+    .cmp-tbl-row:nth-child(even) { background: transparent; }
+    .cmp-tbl-row:hover { background: var(--gd); }
 
-/* Table wrapper with animation */
-.cmp-table-wrap {
-  border: 1px solid var(--gm);
-  border-radius: 10px;
-  overflow: hidden;
-  animation: tableReveal .3s ease both;
-}
-@keyframes tableReveal {
-  from { opacity: 0; transform: translateY(10px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
+    .cmp-tbl-key {
+      padding: 11px 14px; border-right: 1px solid var(--tr-bdr);
+      font-size: .72rem; font-weight: 700;
+      color: var(--grey-l); text-transform: uppercase; letter-spacing: 1px;
+      display: flex; align-items: center;
+    }
+    .cmp-tbl-val {
+      padding: 11px 14px; border-right: 1px solid var(--tr-bdr);
+      font-size: .88rem; font-weight: 600; color: var(--white);
+      display: flex; align-items: center; justify-content: center;
+      text-align: center; gap: 5px;
+    }
+    .cmp-tbl-val:last-child { border-right: none; }
 
-/* Winner bar */
-.cmp-winner-bar {
-  background: linear-gradient(90deg, rgba(106,176,76,.1) 0%, transparent 100%);
-  border-bottom: 1px solid rgba(106,176,76,.18);
-  padding: 8px 16px;
-  font-family: var(--fb); font-size: .7rem; font-weight: 600;
-  letter-spacing: 1.5px; text-transform: uppercase;
-  color: var(--gl);
-  display: flex; align-items: center; gap: 6px;
-}
-.cmp-winner-bar strong { color: var(--gold); }
+    /* Winner highlight */
+    .cmp-tbl-val.winner {
+      color: var(--gl);
+      font-weight: 700;
+      background: rgba(106,176,76,.07);
+    }
+    .cmp-tbl-val.winner::after {
+      content: '▲';
+      font-size: .58rem;
+      color: var(--gl);
+      opacity: .7;
+    }
+    .cmp-tbl-val.loser { color: var(--grey); }
 
-/* Table header */
-.cmp-table-header {
-  display: grid;
-  grid-template-columns: 150px 1fr 1fr;
-  border-bottom: 2px solid var(--gm);
-}
-.cmp-th {
-  display: flex; flex-direction: column; align-items: center; gap: 7px;
-  padding: 14px 10px;
-}
-.cmp-th:first-child { align-items: flex-start; }
-.cmp-th-img {
-  width: 94px; height: 62px;
-  object-fit: contain;
-  background: var(--gd); border-radius: 6px; padding: 6px;
-  border: 1px solid var(--gm);
-}
-.cmp-th-name {
-  font-family: var(--fh); font-size: .95rem; font-weight: 800;
-  letter-spacing: 2px; text-transform: uppercase; color: var(--white);
-  text-align: center;
-}
-.cmp-th-cat {
-  font-size: .58rem; letter-spacing: 2px; text-transform: uppercase;
-}
-.cmp-th-spec-label {
-  font-family: var(--fh); font-size: .65rem; font-weight: 700;
-  letter-spacing: 3px; text-transform: uppercase;
-  color: var(--grey); padding-top: 16px;
-}
+    /* Summary win count */
+    .cmp-summary {
+      display: flex; gap: 0;
+      background: var(--gd); border: 1px solid var(--gm);
+      border-radius: 8px; overflow: hidden;
+      margin-top: 12px;
+    }
+    .cmp-sum-half {
+      flex: 1; padding: 14px 18px;
+      display: flex; align-items: center; gap: 12px;
+      border-right: 1px solid var(--gm);
+    }
+    .cmp-sum-half:last-child { border-right: none; }
+    .cmp-sum-score {
+      font-family: var(--fh); font-size: 2rem;
+      font-weight: 800; line-height: 1;
+    }
+    .cmp-sum-info { flex: 1; min-width: 0; }
+    .cmp-sum-name {
+      font-family: var(--fh); font-size: .85rem;
+      font-weight: 700; letter-spacing: 1.5px;
+      color: var(--white); text-transform: uppercase;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .cmp-sum-label { font-size: .62rem; color: var(--grey); letter-spacing: 1px; margin-top: 2px; }
+    .cmp-winner-badge {
+      font-family: var(--fh); font-size: .65rem; font-weight: 700;
+      letter-spacing: 2px; padding: 3px 9px; border-radius: 10px;
+      text-transform: uppercase;
+    }
+    .cmp-winner-badge.win {
+      background: rgba(106,176,76,.2); border: 1px solid rgba(106,176,76,.5);
+      color: var(--gl);
+    }
+    .cmp-winner-badge.tie {
+      background: rgba(200,168,75,.15); border: 1px solid rgba(200,168,75,.4);
+      color: var(--gold);
+    }
 
-/* Spec rows */
-.cmp-table-body { display: flex; flex-direction: column; }
-.cmp-spec-row {
-  display: grid; grid-template-columns: 150px 1fr 1fr;
-  border-bottom: 1px solid rgba(37,53,32,.55);
-  transition: background .15s;
-}
-.cmp-spec-row:nth-child(odd)  { background: rgba(22,32,20,.5); }
-.cmp-spec-row:nth-child(even) { background: transparent; }
-.cmp-spec-row:last-child { border-bottom: none; }
-.cmp-spec-row:hover { background: var(--gd); }
+    /* No results placeholder */
+    .cmp-pick-prompt {
+      text-align: center; padding: 32px 20px;
+      color: var(--grey); font-size: .88rem; line-height: 1.7;
+      border-top: 1px solid var(--gd); margin: 0 28px;
+    }
+    .cmp-pick-prompt svg { width: 40px; height: 40px; opacity: .2; color: var(--gold); margin: 0 auto 12px; display: block; }
 
-.cmp-spec-key {
-  font-family: var(--fb); font-size: .7rem; font-weight: 700;
-  color: var(--grey-l); text-transform: uppercase; letter-spacing: .8px;
-  padding: 11px 14px; display: flex; align-items: center;
-  border-right: 1px solid rgba(37,53,32,.5);
-}
-.cmp-spec-val {
-  padding: 11px 14px;
-  font-family: var(--fb); font-size: .85rem; font-weight: 600;
-  color: var(--white);
-  display: flex; align-items: center; justify-content: center;
-  text-align: center;
-}
-.cmp-spec-val:first-of-type { border-right: 1px solid rgba(37,53,32,.5); }
-.cmp-spec-val.winner {
-  color: var(--gl); font-weight: 700;
-}
-.cmp-spec-val.winner::after {
-  content: '★'; font-size: .55rem; margin-left: 5px;
-  color: var(--gl); opacity: .8;
-}
+    /* ══════════════════════════════════════════
+       RESPONSIVE — gun-detail + compare modal
+    ══════════════════════════════════════════ */
+    @media(max-width:860px){
+      .gd-content    { flex-direction:column; padding:20px 16px 40px; gap:22px; }
+      .gd-img-panel  { flex:none; width:100%; position:static; }
+      .gd-img-wrap   { min-height:220px; padding:24px 18px; }
+      .gd-img-wrap img { max-height:200px; }
+      #gd-name       { font-size:clamp(1.6rem,7vw,2.8rem); letter-spacing:3px; }
+      #gd-desc       { font-size:.88rem; }
+      .gd-actions    { gap:8px; }
+      .gd-btn        { padding:9px 16px; font-size:.85rem; letter-spacing:1px; }
 
-/* ══ RESPONSIVE ══ */
-@media (max-width: 860px) {
-  .cmp-selectors {
-    grid-template-columns: 1fr;
-    gap: 16px;
-    padding: 18px;
-  }
-  .cmp-vs-col { display: none; }
-  .cmp-table-header { grid-template-columns: 90px 1fr 1fr; }
-  .cmp-spec-row      { grid-template-columns: 90px 1fr 1fr; }
-  .cmp-spec-key  { font-size: .62rem; padding: 9px 8px; }
-  .cmp-spec-val  { font-size: .78rem; padding: 9px 8px; }
-  .cmp-results   { padding: 0 16px 20px; }
-  .cmp-th-img { width: 70px; height: 48px; }
-}
+      .cmp-guns-row  { flex-direction:column; gap:14px; padding:14px 16px; }
+      .cmp-gun-slot:first-child { padding-right:0; border-right:none; border-bottom:1px solid var(--gd); padding-bottom:14px; }
+      .cmp-gun-slot:last-child  { padding-left:0; }
+      .cmp-vs-badge  { display:none; }
+      .cmp-tbl-head, .cmp-tbl-row { grid-template-columns:80px 1fr 1fr; }
+      .cmp-tbl-key   { font-size:.6rem; padding:9px 6px; }
+      .cmp-tbl-val   { padding:9px 6px; font-size:.78rem; }
+      .cmp-tbl-th img { width:62px; height:42px; }
+      .cmp-tbl-th-name { font-size:.8rem; letter-spacing:1px; }
+      .cmp-table-wrap { padding:0 14px 20px; }
+      .cmp-steps     { padding:10px 16px; gap:4px; flex-wrap:wrap; }
+      .cmp-step      { font-size:.65rem; }
+      .cmp-step-arrow { margin:0 6px; }
+      .cmp-header    { padding:16px 18px 14px; }
+      .cmp-header h2 { font-size:1.2rem; letter-spacing:3px; }
+      .cmp-header-icon { width:30px; height:30px; }
+      .cmp-summary   { flex-direction:column; }
+      .cmp-sum-half  { border-right:none; border-bottom:1px solid var(--gm); }
+      .cmp-sum-half:last-child { border-bottom:none; }
+    }
 
+    @media(max-width:480px){
+      .gd-breadcrumb { padding:14px 16px 0; }
+      .gd-back       { font-size:.72rem; }
+      .gd-img-wrap   { min-height:180px; padding:18px 14px; }
+      .gd-img-wrap img { max-height:170px; }
+      #gd-name       { font-size:clamp(1.4rem,8vw,2.2rem); letter-spacing:2px; }
+      .gd-img-foot   { flex-direction:column; align-items:flex-start; gap:10px; padding:12px 14px; }
+      #gd-fav        { font-size:.72rem; }
+      .gd-actions    { flex-direction:column; }
+      .gd-btn        { width:100%; justify-content:center; }
+      .gd-key        { font-size:.7rem; min-width:90px; }
+      .gd-val        { font-size:.85rem; }
+
+      #cmpModal      { border-radius:10px; }
+      .cmp-cat-grid  { gap:5px; }
+      .cmp-cat-pill  { padding:6px 10px; font-size:.68rem; }
+      .cmp-gun-item img { width:48px; height:30px; }
+      .cmp-gun-item-name { font-size:.75rem; }
+      .cmp-tbl-head, .cmp-tbl-row { grid-template-columns:70px 1fr 1fr; }
+      .cmp-tbl-key   { font-size:.56rem; padding:8px 5px; }
+      .cmp-tbl-val   { font-size:.72rem; padding:8px 5px; }
+      .cmp-tbl-th img { width:50px; height:34px; }
+      .cmp-tbl-th-name { font-size:.72rem; }
+      .cmp-sum-score { font-size:1.6rem; }
+      .cmp-sum-name  { font-size:.75rem; }
+    }
   </style>
 </head>
 <body>
@@ -750,546 +730,407 @@
   <p>⚔ <strong>WEAPON VERSE</strong> — This website is created for educational purposes only. &copy; 2025</p>
 </footer>
 
-
 <!-- ══════════════════════════════════════════════
-     COMPARE OVERLAY
+     COMPARE OVERLAY — Redesigned
 ══════════════════════════════════════════════ -->
 <div id="cmpOverlay">
   <div id="cmpModal">
 
-    <!-- ── Modal Header ── -->
+    <!-- Header -->
     <div class="cmp-header">
       <div class="cmp-header-left">
         <div class="cmp-header-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22">
             <path d="M8 3H2v6M16 3h6v6M2 21h6M16 21h6v-6M2 9l10 6 10-6"/>
           </svg>
         </div>
-        <h2 class="cmp-title">Compare Guns</h2>
+        <div>
+          <h2>Compare Guns</h2>
+          <div class="cmp-header-sub">Compare any two firearms across all categories</div>
+        </div>
       </div>
-      <button class="cmp-close" onclick="closeCompare()" title="Close">✕</button>
+      <button class="cmp-close" onclick="closeCompare()">✕</button>
     </div>
 
-    <!-- ── Selector Row ── -->
-    <div class="cmp-selectors">
+    <!-- Step indicator -->
+    <div class="cmp-steps">
+      <div class="cmp-step done" id="stepA">
+        <div class="cmp-step-num">✓</div> Gun A Selected
+      </div>
+      <span class="cmp-step-arrow">›</span>
+      <div class="cmp-step active" id="stepB">
+        <div class="cmp-step-num" id="stepBNum">2</div> Choose Gun B
+      </div>
+      <span class="cmp-step-arrow">›</span>
+      <div class="cmp-step" id="stepC">
+        <div class="cmp-step-num">3</div> View Comparison
+      </div>
+    </div>
 
-      <!-- Slot A — current gun (locked) -->
-      <div class="cmp-slot cmp-slot-a">
-        <div class="cmp-slot-label">
-          <span class="cmp-slot-dot" style="background:var(--gl)"></span>
-          Gun A — current
-        </div>
-        <div class="cmp-chosen cmp-chosen-a">
-          <div class="cmp-chosen-img" id="cmpImgWrapA">
-            <img id="cmpImgA" src="" alt=""/>
+    <!-- Guns side by side -->
+    <div class="cmp-guns-row">
+
+      <!-- Gun A — locked (current gun) -->
+      <div class="cmp-gun-slot">
+        <div class="cmp-slot-label cmp-slot-label-a">⚔ GUN A — CURRENT</div>
+        <div class="cmp-gun-display gun-a">
+          <img id="cmpImgA" class="cmp-gun-thumb" src="" alt=""/>
+          <div class="cmp-gun-meta">
+            <div class="cmp-gun-meta-name" id="cmpNameA">—</div>
+            <div class="cmp-gun-meta-cat"  id="cmpCatA">—</div>
           </div>
-          <div class="cmp-chosen-info">
-            <div class="cmp-chosen-name" id="cmpNameA">—</div>
-            <div class="cmp-chosen-cat"  id="cmpCatA">—</div>
-          </div>
-          <span class="cmp-locked-badge">LOCKED</span>
+          <span class="cmp-lock-badge">🔒 Locked</span>
         </div>
       </div>
 
-      <!-- VS divider -->
-      <div class="cmp-vs-col">
-        <div class="cmp-vs-badge" id="cmpVsBadge">
-          <span>VS</span>
+      <!-- VS badge (absolutely centered between slots) -->
+      <div style="position:relative;width:0;overflow:visible;">
+        <div class="cmp-vs-badge">VS</div>
+      </div>
+
+      <!-- Gun B — user picks -->
+      <div class="cmp-gun-slot">
+        <div class="cmp-slot-label cmp-slot-label-b">🎯 GUN B — YOUR CHOICE</div>
+
+        <!-- Shown after selection -->
+        <div class="cmp-gun-display gun-b-filled" id="chosenBDisplay" style="display:none;">
+          <img id="cmpImgB" class="cmp-gun-thumb" src="" alt=""/>
+          <div class="cmp-gun-meta">
+            <div class="cmp-gun-meta-name cmp-gun-meta-name-b" id="cmpNameB">—</div>
+            <div class="cmp-gun-meta-cat cmp-gun-meta-cat-b" id="cmpCatB">—</div>
+          </div>
+          <button class="cmp-change-btn" onclick="showPicker()">↩ Change</button>
+        </div>
+
+        <!-- Picker — category pills then gun list -->
+        <div class="cmp-picker-wrap open" id="pickerWrap">
+          <div class="cmp-picker-title">① Pick a Category</div>
+          <div class="cmp-cat-grid" id="pickerCatGrid">
+            <!-- filled by JS -->
+          </div>
+          <div class="cmp-gun-list" id="pickerGunList">
+            <!-- filled by JS after category selected -->
+          </div>
         </div>
       </div>
 
-      <!-- Slot B — user picks -->
-      <div class="cmp-slot cmp-slot-b">
-        <div class="cmp-slot-label">
-          <span class="cmp-slot-dot" style="background:var(--gold)"></span>
-          Gun B — pick any
-        </div>
+    </div><!-- end cmp-guns-row -->
 
-        <!-- Chosen gun card (hidden until confirmed) -->
-        <div class="cmp-chosen cmp-chosen-b" id="chosenB" style="display:none">
-          <div class="cmp-chosen-img" id="cmpImgWrapB">
-            <img id="cmpImgB" src="" alt=""/>
-          </div>
-          <div class="cmp-chosen-info">
-            <div class="cmp-chosen-name" id="cmpNameB">—</div>
-            <div class="cmp-chosen-cat"  id="cmpCatB">—</div>
-          </div>
-          <button class="cmp-change-btn" onclick="changeGunB()">Change</button>
-        </div>
+    <!-- Prompt before comparison -->
+    <div class="cmp-pick-prompt" id="cmpPrompt">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M8 3H2v6M16 3h6v6M2 21h6M16 21h6v-6M2 9l10 6 10-6"/>
+      </svg>
+      <p>Select a category and choose <strong>Gun B</strong> to see a full side-by-side comparison.</p>
+    </div>
 
-        <!-- Picker (visible by default) -->
-        <div class="cmp-picker" id="pickerB">
+    <!-- Comparison table (filled by JS) -->
+    <div class="cmp-table-wrap" id="cmpTableWrap">
+      <div class="cmp-table-title">⚙ SPEC COMPARISON</div>
+      <div class="cmp-tbl-head" id="cmpTblHead"></div>
+      <div class="cmp-tbl-body" id="cmpTblBody"></div>
+      <div class="cmp-summary"  id="cmpSummary"></div>
+    </div>
 
-          <!-- Step 1: category chips -->
-          <div class="cmp-cat-chips" id="cmpCatChips">
-            <!-- built by JS -->
-          </div>
-
-          <!-- Step 2: gun list (shown after category picked) -->
-          <div class="cmp-gun-list-wrap" id="cmpGunListWrap" style="display:none">
-            <div class="cmp-gun-list" id="cmpGunList">
-              <!-- built by JS -->
-            </div>
-          </div>
-
-          <!-- Step 3: confirm -->
-          <button class="cmp-confirm-btn" id="cmpConfirmBtn" disabled onclick="confirmGunB()">
-            <svg viewBox="0 0 16 16" fill="currentColor" width="13" height="13"><path d="M13.5 2.5L6 10 2.5 6.5l-1 1L6 12l8.5-8.5z"/></svg>
-            Set as Gun B
-          </button>
-
-        </div>
-      </div>
-
-    </div><!-- end cmp-selectors -->
-
-    <!-- ── Results Table ── -->
-    <div class="cmp-results" id="cmpResults">
-
-      <div class="cmp-empty" id="cmpEmpty">
-        <div class="cmp-empty-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="38" height="38">
-            <path d="M8 3H2v6M16 3h6v6M2 21h6M16 21h6v-6M2 9l10 6 10-6"/>
-          </svg>
-        </div>
-        <p>Select <strong>Gun B</strong> above to start comparing.<br/>
-           Mix and match across categories!</p>
-      </div>
-
-      <div class="cmp-table-wrap" id="cmpTableWrap" style="display:none">
-        <div class="cmp-winner-bar" id="cmpWinnerBar">
-          <span>⚖</span> Side-by-side specs — <strong>★</strong> marks the stat leader
-        </div>
-        <div class="cmp-table-header" id="cmpTableHeader"></div>
-        <div class="cmp-table-body"   id="cmpTableBody"></div>
-      </div>
-
-    </div><!-- end cmp-results -->
-
-  </div><!-- end cmpModal -->
-</div><!-- end cmpOverlay -->
-
+  </div>
+</div>
 
 <script src="script.js"></script>
 <script>
 /* ================================================================
-   GUN DATABASE — all guns available for comparison picker
-   Format: { name, category, img, specs: {key:val,...} }
+   GUN DATABASE — all 48 guns for the compare picker
 ================================================================ */
-/* ================================================================
-   WEAPON VERSE — Compare Modal JS  (v2)
-   ----------------------------------------------------------------
-   PASTE THIS to replace the entire <script> block at the bottom
-   of gun-detail.html (the one that starts with var GUN_DB = [...])
-
-   Keep the window DOMContentLoaded listener that calls
-   initGunDetailPage() — just replace everything else in that script.
-================================================================ */
-
-/* ── GUN DATABASE ── */
 var GUN_DB = [
-  /* PISTOLS */
-  { name:'Glock 17',          cat:'pistol',  img:'Gun Images/Glock17.jpg',            specs:{Caliber:'9×19mm Parabellum', Weight:'625 g (unloaded)', Magazine:'17 rounds', Range:'50 m', Origin:'Austria (1982)'} },
-  { name:'Beretta M9',        cat:'pistol',  img:'Gun Images/Beretta-92FS.jpg',        specs:{Caliber:'9×19mm Parabellum', Weight:'952 g (loaded)',   Magazine:'15 rounds', Range:'50 m', Origin:'Italy (1975)'} },
-  { name:'Colt M1911',        cat:'pistol',  img:'Gun Images/Colt_1911.jpg',           specs:{Caliber:'.45 ACP',           Weight:'1.13 kg (unloaded)',Magazine:'7 rounds',  Range:'50 m', Origin:'USA (1911)'} },
-  { name:'SIG Sauer P320',    cat:'pistol',  img:'Gun Images/Sig-sauer-P238.jpg',      specs:{Caliber:'9mm / .40 S&W',     Weight:'833 g (unloaded)', Magazine:'17 rounds', Range:'50 m', Origin:'USA / Germany (2014)'} },
-  { name:'Desert Eagle',      cat:'pistol',  img:'Gun Images/Desert-eagle.jpg',        specs:{Caliber:'.50 AE / .44 Mag',  Weight:'1.99 kg (unloaded)',Magazine:'7 rounds',  Range:'50 m', Origin:'USA / Israel (1983)'} },
-  { name:'Walther PPK',       cat:'pistol',  img:'Gun Images/Walther_PPK.jpg',         specs:{Caliber:'.380 ACP / 7.65mm', Weight:'590 g (unloaded)', Magazine:'7 rounds',  Range:'50 m', Origin:'Germany (1931)'} },
-  { name:'HK USP',            cat:'pistol',  img:'Gun Images/hk_usb.jpg',              specs:{Caliber:'9mm / .40 / .45',   Weight:'748 g (unloaded)', Magazine:'15 rounds', Range:'50 m', Origin:'Germany (1993)'} },
-  { name:'Ruger SR9',         cat:'pistol',  img:'Gun Images/Ruagr.jpg',               specs:{Caliber:'9×19mm Parabellum', Weight:'755 g (unloaded)', Magazine:'17 rounds', Range:'50 m', Origin:'USA (2007)'} },
-  { name:'CZ 75',             cat:'pistol',  img:'Gun Images/CZ75.jpg',                specs:{Caliber:'9×19mm Parabellum', Weight:'1.0 kg (unloaded)', Magazine:'16 rounds', Range:'50 m', Origin:'Czechoslovakia (1975)'} },
-  { name:'Browning Hi-Power', cat:'pistol',  img:'Gun Images/Brownwing HI-power.jpg',  specs:{Caliber:'9×19mm Parabellum', Weight:'882 g (unloaded)', Magazine:'13 rounds', Range:'50 m', Origin:'Belgium (1935)'} },
-  /* RIFLES */
-  { name:'AK-47',             cat:'rifle',   img:'Gun Images/AK-47.jpg',               specs:{Caliber:'7.62×39mm',         Weight:'3.47 kg (unloaded)',Magazine:'30 rounds', Range:'350 m', Origin:'Soviet Union (1947)'} },
-  { name:'M16',               cat:'rifle',   img:'Gun Images/M16.jpg',                 specs:{Caliber:'5.56×45mm NATO',    Weight:'3.26 kg (unloaded)',Magazine:'30 rounds', Range:'550 m', Origin:'USA (1964)'} },
-  { name:'HK416',             cat:'rifle',   img:'Gun Images/HK416N.jpg',              specs:{Caliber:'5.56×45mm NATO',    Weight:'3.54 kg (unloaded)',Magazine:'30 rounds', Range:'500 m', Origin:'Germany (2004)'} },
-  { name:'INSAS Rifle',       cat:'rifle',   img:'Gun Images/INSAS_Rifle.jpg',         specs:{Caliber:'5.56×45mm NATO',    Weight:'3.2 kg (unloaded)', Magazine:'20 rounds', Range:'400 m', Origin:'India (1998)'} },
-  { name:'FN SCAR-L',         cat:'rifle',   img:'Gun Images/FN_Scar.jpg',             specs:{Caliber:'5.56×45mm NATO',    Weight:'3.04 kg (unloaded)',Magazine:'30 rounds', Range:'500 m', Origin:'Belgium (2004)'} },
-  { name:'HK G36',            cat:'rifle',   img:'Gun Images/HK_G36.png',              specs:{Caliber:'5.56×45mm NATO',    Weight:'3.63 kg (unloaded)',Magazine:'30 rounds', Range:'500 m', Origin:'Germany (1997)'} },
-  { name:'Steyr AUG',         cat:'rifle',   img:'Gun Images/A3.png',                  specs:{Caliber:'5.56×45mm NATO',    Weight:'3.6 kg (unloaded)', Magazine:'30 rounds', Range:'500 m', Origin:'Austria (1978)'} },
-  { name:'L85A2 (SA80)',      cat:'rifle',   img:'Gun Images/L85A2.jpg.png',           specs:{Caliber:'5.56×45mm NATO',    Weight:'4.98 kg (loaded)',  Magazine:'30 rounds', Range:'500 m', Origin:'UK (1985)'} },
-  { name:'FAMAS',             cat:'rifle',   img:'Gun Images/famas.jpg',               specs:{Caliber:'5.56×45mm NATO',    Weight:'3.61 kg (unloaded)',Magazine:'25 rounds', Range:'450 m', Origin:'France (1978)'} },
-  { name:'Tavor TAR-21',      cat:'rifle',   img:'Gun Images/IWI-Tavor.jpg',           specs:{Caliber:'5.56×45mm NATO',    Weight:'3.27 kg (unloaded)',Magazine:'30 rounds', Range:'550 m', Origin:'Israel (2001)'} },
-  /* SHOTGUNS */
-  { name:'Remington 870',     cat:'shotgun', img:'Gun Images/Remington 870.png',       specs:{Gauge:'12 / 20 / .410',      Weight:'3.6 kg',            Magazine:'7 rounds',  Range:'50 m',   Origin:'USA (1950)'} },
-  { name:'Mossberg 500',      cat:'shotgun', img:'Gun Images/Mossberg.jpg',            specs:{Gauge:'12 gauge',            Weight:'3.4 kg',            Magazine:'8 rounds',  Range:'40 m',   Origin:'USA (1961)'} },
-  { name:'Benelli M4',        cat:'shotgun', img:'Gun Images/Benelli-m4.jpg',          specs:{Gauge:'12 gauge',            Weight:'3.82 kg',           Magazine:'5+1 rounds',Range:'50 m',   Origin:'Italy (1998)'} },
-  { name:'Winchester 1897',   cat:'shotgun', img:'Gun Images/Winchester_92.jpg',       specs:{Gauge:'12 gauge',            Weight:'3.6 kg',            Magazine:'5+1 rounds',Range:'40 m',   Origin:'USA (1897)'} },
-  { name:'Saiga-12',          cat:'shotgun', img:'Gun Images/Saiga_12k.jpg',           specs:{Gauge:'12 gauge',            Weight:'3.6 kg',            Magazine:'10 rounds', Range:'50 m',   Origin:'Russia (1997)'} },
-  { name:'Franchi SPAS-12',   cat:'shotgun', img:'Gun Images/SPAS-12.jpg',             specs:{Gauge:'12 gauge',            Weight:'4.2 kg',            Magazine:'8 rounds',  Range:'50 m',   Origin:'Italy (1979)'} },
-  { name:'Mossberg 590',      cat:'shotgun', img:'Gun Images/Mossberg_590.jpg',        specs:{Gauge:'12 gauge',            Weight:'3.07 kg',           Magazine:'9 rounds',  Range:'45 m',   Origin:'USA (1987)'} },
-  { name:'Browning Auto-5',   cat:'shotgun', img:'Gun Images/Browning_auto.jpg',       specs:{Gauge:'12 / 16 / 20',        Weight:'3.86 kg',           Magazine:'5 rounds',  Range:'50 m',   Origin:'Belgium (1902)'} },
-  { name:'Kel-Tec KSG',       cat:'shotgun', img:'Gun Images/Kel-Tec.jpg',             specs:{Gauge:'12 gauge',            Weight:'2.86 kg',           Magazine:'14+1 rounds',Range:'45 m',  Origin:'USA (2011)'} },
-  { name:'AA-12',             cat:'shotgun', img:'Gun Images/AA-12.jpg',               specs:{Gauge:'12 gauge',            Weight:'4.76 kg',           Magazine:'20-round drum',Range:'100 m',Origin:'USA (1972)'} },
-  /* SNIPERS */
-  { name:'Barrett M82',       cat:'sniper',  img:'Gun Images/Barrett_M82.jpg',         specs:{Caliber:'.50 BMG',           Weight:'14.0 kg',           Magazine:'10 rounds', Range:'1,800 m',Origin:'USA (1982)'} },
-  { name:'Dragunov SVD',      cat:'sniper',  img:'Gun Images/Dragunov.jpg',            specs:{Caliber:'7.62×54mmR',        Weight:'4.31 kg',           Magazine:'10 rounds', Range:'800 m',  Origin:'Soviet Union (1963)'} },
-  { name:'CheyTac M200',      cat:'sniper',  img:'Gun Images/CheyTac M200.jpg',        specs:{Caliber:'.408 CheyTac',      Weight:'11.3 kg',           Magazine:'7 rounds',  Range:'2,200 m',Origin:'USA (2001)'} },
-  { name:'AI AXMC',           cat:'sniper',  img:'Gun Images/AI AXMC.jpg',             specs:{Caliber:'.338 Lapua / .308', Weight:'6.8 kg',            Magazine:'10 rounds', Range:'1,500 m',Origin:'UK (2012)'} },
-  { name:'AI AWM',            cat:'sniper',  img:'Gun Images/AWM.jpg',                 specs:{Caliber:'.338 Lapua Mag',    Weight:'6.9 kg',            Magazine:'5 rounds',  Range:'1,100 m',Origin:'UK (1996)'} },
-  { name:'M24 SWS',           cat:'sniper',  img:'Gun Images/M24.jpg',                 specs:{Caliber:'7.62×51mm NATO',    Weight:'5.4 kg',            Magazine:'5 rounds',  Range:'800 m',  Origin:'USA (1988)'} },
-  { name:'Sako TRG-42',       cat:'sniper',  img:'Gun Images/Sako TRG-42.jpg',         specs:{Caliber:'.338 Lapua Mag',    Weight:'5.1 kg',            Magazine:'5 rounds',  Range:'1,500 m',Origin:'Finland (2000)'} },
-  { name:'DSR-1',             cat:'sniper',  img:'Gun Images/DSR-1.jpg',               specs:{Caliber:'.300 Win Mag',      Weight:'5.9 kg',            Magazine:'4 rounds',  Range:'1,000 m',Origin:'Germany (2000)'} },
-  /* SMGS */
-  { name:'HK MP5',            cat:'smg',     img:'Gun Images/HK_MP5.jpg',              specs:{Caliber:'9×19mm Parabellum', Weight:'2.54 kg',           Magazine:'30 rounds', Range:'200 m',  Origin:'Germany (1966)'} },
-  { name:'Uzi',               cat:'smg',     img:'Gun Images/Uzi.jpg',                 specs:{Caliber:'9×19mm Parabellum', Weight:'3.5 kg',            Magazine:'32 rounds', Range:'200 m',  Origin:'Israel (1954)'} },
-  { name:'Thompson M1A1',     cat:'smg',     img:'Gun Images/Thompson.jpg',            specs:{Caliber:'.45 ACP',           Weight:'4.74 kg',           Magazine:'30 rounds', Range:'150 m',  Origin:'USA (1919)'} },
-  { name:'FN P90',            cat:'smg',     img:'Gun Images/FN P90.jpg',              specs:{Caliber:'5.7×28mm FN',       Weight:'2.54 kg',           Magazine:'50 rounds', Range:'200 m',  Origin:'Belgium (1990)'} },
-  { name:'MP40',              cat:'smg',     img:'Gun Images/mp40.jpg',                specs:{Caliber:'9×19mm Parabellum', Weight:'3.97 kg',           Magazine:'32 rounds', Range:'100 m',  Origin:'Germany (1940)'} },
-  { name:'HK MP7',            cat:'smg',     img:'Gun Images/Heckler_&_Koch.jpg',      specs:{Caliber:'4.6×30mm HK',       Weight:'1.2 kg',            Magazine:'40 rounds', Range:'200 m',  Origin:'Germany (2001)'} },
-  { name:'Steyr TMP',         cat:'smg',     img:'Gun Images/STEYRTMP.jpg',            specs:{Caliber:'9×19mm Parabellum', Weight:'1.3 kg',            Magazine:'30 rounds', Range:'100 m',  Origin:'Austria (1992)'} },
-  { name:'PP-19 Bizon',       cat:'smg',     img:'Gun Images/bizon.jpg',               specs:{Caliber:'9×18mm Makarov',    Weight:'2.1 kg',            Magazine:'64-round helical', Range:'150 m',Origin:'Russia (1996)'} },
-  { name:'KRISS Vector',      cat:'smg',     img:'Gun Images/Kriss_Vector.jpg',        specs:{Caliber:'.45 ACP / 9mm',     Weight:'2.18 kg',           Magazine:'13–25 rounds',Range:'50 m', Origin:'USA (2009)'} },
-  { name:'vz. 61 Škorpion',   cat:'smg',     img:'Gun Images/CZUSA.jpg',               specs:{Caliber:'7.65×17mm',         Weight:'1.28 kg',           Magazine:'20 rounds', Range:'50 m',   Origin:'Czechoslovakia (1961)'} }
+  {name:'Glock 17',cat:'pistol',img:'Gun Images/Glock17.jpg',specs:{Caliber:'9×19mm Parabellum',Weight:'625 g (unloaded)',Magazine:'17 rounds',Range:'50 m',Origin:'Austria (1982)'}},
+  {name:'Beretta M9',cat:'pistol',img:'Gun Images/Beretta-92FS.jpg',specs:{Caliber:'9×19mm Parabellum',Weight:'952 g (loaded)',Magazine:'15 rounds',Range:'50 m',Origin:'Italy (1975)'}},
+  {name:'Colt M1911',cat:'pistol',img:'Gun Images/Colt_1911.jpg',specs:{Caliber:'.45 ACP',Weight:'1.13 kg (unloaded)',Magazine:'7 rounds',Range:'50 m',Origin:'USA (1911)'}},
+  {name:'SIG Sauer P320',cat:'pistol',img:'Gun Images/Sig-sauer-P238.jpg',specs:{Caliber:'9mm / .40 S&W',Weight:'833 g (unloaded)',Magazine:'17 rounds',Range:'50 m',Origin:'USA / Germany (2014)'}},
+  {name:'Desert Eagle',cat:'pistol',img:'Gun Images/Desert-eagle.jpg',specs:{Caliber:'.50 AE / .44 Mag',Weight:'1.99 kg (unloaded)',Magazine:'7 rounds',Range:'50 m',Origin:'USA / Israel (1983)'}},
+  {name:'Walther PPK',cat:'pistol',img:'Gun Images/Walther_PPK.jpg',specs:{Caliber:'.380 ACP / 7.65mm',Weight:'590 g (unloaded)',Magazine:'7 rounds',Range:'50 m',Origin:'Germany (1931)'}},
+  {name:'HK USP',cat:'pistol',img:'Gun Images/hk_usb.jpg',specs:{Caliber:'9mm / .40 / .45',Weight:'748 g (unloaded)',Magazine:'15 rounds',Range:'50 m',Origin:'Germany (1993)'}},
+  {name:'Ruger SR9',cat:'pistol',img:'Gun Images/Ruagr.jpg',specs:{Caliber:'9×19mm Parabellum',Weight:'755 g (unloaded)',Magazine:'17 rounds',Range:'50 m',Origin:'USA (2007)'}},
+  {name:'CZ 75',cat:'pistol',img:'Gun Images/CZ75.jpg',specs:{Caliber:'9×19mm Parabellum',Weight:'1.0 kg (unloaded)',Magazine:'16 rounds',Range:'50 m',Origin:'Czechoslovakia (1975)'}},
+  {name:'Browning Hi-Power',cat:'pistol',img:'Gun Images/Brownwing HI-power.jpg',specs:{Caliber:'9×19mm Parabellum',Weight:'882 g (unloaded)',Magazine:'13 rounds',Range:'50 m',Origin:'Belgium (1935)'}},
+  {name:'AK-47',cat:'rifle',img:'Gun Images/AK-47.jpg',specs:{Caliber:'7.62×39mm',Weight:'3.47 kg (unloaded)',Magazine:'30 rounds',Range:'350 m',Origin:'Soviet Union (1947)'}},
+  {name:'M16',cat:'rifle',img:'Gun Images/M16.jpg',specs:{Caliber:'5.56×45mm NATO',Weight:'3.26 kg (unloaded)',Magazine:'30 rounds',Range:'550 m',Origin:'USA (1964)'}},
+  {name:'HK416',cat:'rifle',img:'Gun Images/HK416N.jpg',specs:{Caliber:'5.56×45mm NATO',Weight:'3.54 kg (unloaded)',Magazine:'30 rounds',Range:'500 m',Origin:'Germany (2004)'}},
+  {name:'INSAS Rifle',cat:'rifle',img:'Gun Images/INSAS_Rifle.jpg',specs:{Caliber:'5.56×45mm NATO',Weight:'3.2 kg (unloaded)',Magazine:'20 rounds',Range:'400 m',Origin:'India (1998)'}},
+  {name:'FN SCAR-L',cat:'rifle',img:'Gun Images/FN_Scar.jpg',specs:{Caliber:'5.56×45mm NATO',Weight:'3.04 kg (unloaded)',Magazine:'30 rounds',Range:'500 m',Origin:'Belgium (2004)'}},
+  {name:'HK G36',cat:'rifle',img:'Gun Images/HK_G36.png',specs:{Caliber:'5.56×45mm NATO',Weight:'3.63 kg (unloaded)',Magazine:'30 rounds',Range:'500 m',Origin:'Germany (1997)'}},
+  {name:'Steyr AUG',cat:'rifle',img:'Gun Images/A3.png',specs:{Caliber:'5.56×45mm NATO',Weight:'3.6 kg (unloaded)',Magazine:'30 rounds',Range:'500 m',Origin:'Austria (1978)'}},
+  {name:'L85A2 (SA80)',cat:'rifle',img:'Gun Images/L85A2.jpg.png',specs:{Caliber:'5.56×45mm NATO',Weight:'4.98 kg (loaded)',Magazine:'30 rounds',Range:'500 m',Origin:'UK (1985)'}},
+  {name:'FAMAS',cat:'rifle',img:'Gun Images/famas.jpg',specs:{Caliber:'5.56×45mm NATO',Weight:'3.61 kg (unloaded)',Magazine:'25 rounds',Range:'450 m',Origin:'France (1978)'}},
+  {name:'Tavor TAR-21',cat:'rifle',img:'Gun Images/IWI-Tavor.jpg',specs:{Caliber:'5.56×45mm NATO',Weight:'3.27 kg (unloaded)',Magazine:'30 rounds',Range:'550 m',Origin:'Israel (2001)'}},
+  {name:'Remington 870',cat:'shotgun',img:'Gun Images/Remington 870.png',specs:{Gauge:'12 / 20 / .410',Weight:'3.6 kg',Magazine:'7 rounds',Range:'50 m',Origin:'USA (1950)'}},
+  {name:'Mossberg 500',cat:'shotgun',img:'Gun Images/Mossberg.jpg',specs:{Gauge:'12 gauge',Weight:'3.4 kg',Magazine:'8 rounds',Range:'40 m',Origin:'USA (1961)'}},
+  {name:'Benelli M4',cat:'shotgun',img:'Gun Images/Benelli-m4.jpg',specs:{Gauge:'12 gauge',Weight:'3.82 kg',Magazine:'5+1 rounds',Range:'50 m',Origin:'Italy (1998)'}},
+  {name:'Winchester 1897',cat:'shotgun',img:'Gun Images/Winchester_92.jpg',specs:{Gauge:'12 gauge',Weight:'3.6 kg',Magazine:'5+1 rounds',Range:'40 m',Origin:'USA (1897)'}},
+  {name:'Saiga-12',cat:'shotgun',img:'Gun Images/Saiga_12k.jpg',specs:{Gauge:'12 gauge',Weight:'3.6 kg',Magazine:'10 rounds',Range:'50 m',Origin:'Russia (1997)'}},
+  {name:'Franchi SPAS-12',cat:'shotgun',img:'Gun Images/SPAS-12.jpg',specs:{Gauge:'12 gauge',Weight:'4.2 kg',Magazine:'8 rounds',Range:'50 m',Origin:'Italy (1979)'}},
+  {name:'Mossberg 590',cat:'shotgun',img:'Gun Images/Mossberg_590.jpg',specs:{Gauge:'12 gauge',Weight:'3.07 kg',Magazine:'9 rounds',Range:'45 m',Origin:'USA (1987)'}},
+  {name:'Browning Auto-5',cat:'shotgun',img:'Gun Images/Browning_auto.jpg',specs:{Gauge:'12 / 16 / 20',Weight:'3.86 kg',Magazine:'5 rounds',Range:'50 m',Origin:'Belgium (1902)'}},
+  {name:'Kel-Tec KSG',cat:'shotgun',img:'Gun Images/Kel-Tec.jpg',specs:{Gauge:'12 gauge',Weight:'2.86 kg',Magazine:'14+1 rounds',Range:'45 m',Origin:'USA (2011)'}},
+  {name:'AA-12',cat:'shotgun',img:'Gun Images/AA-12.jpg',specs:{Gauge:'12 gauge',Weight:'4.76 kg',Magazine:'20-round drum',Range:'100 m',Origin:'USA (1972)'}},
+  {name:'Barrett M82',cat:'sniper',img:'Gun Images/Barrett_M82.jpg',specs:{Caliber:'.50 BMG',Weight:'14.0 kg',Magazine:'10 rounds',Range:'1,800 m',Origin:'USA (1982)'}},
+  {name:'Dragunov SVD',cat:'sniper',img:'Gun Images/Dragunov.jpg',specs:{Caliber:'7.62×54mmR',Weight:'4.31 kg',Magazine:'10 rounds',Range:'800 m',Origin:'Soviet Union (1963)'}},
+  {name:'CheyTac M200',cat:'sniper',img:'Gun Images/CheyTac M200.jpg',specs:{Caliber:'.408 CheyTac',Weight:'11.3 kg',Magazine:'7 rounds',Range:'2,200 m',Origin:'USA (2001)'}},
+  {name:'AI AXMC',cat:'sniper',img:'Gun Images/AI AXMC.jpg',specs:{Caliber:'.338 Lapua / .308',Weight:'6.8 kg',Magazine:'10 rounds',Range:'1,500 m',Origin:'UK (2012)'}},
+  {name:'AI AWM',cat:'sniper',img:'Gun Images/AWM.jpg',specs:{Caliber:'.338 Lapua Mag',Weight:'6.9 kg',Magazine:'5 rounds',Range:'1,100 m',Origin:'UK (1996)'}},
+  {name:'M24 SWS',cat:'sniper',img:'Gun Images/M24.jpg',specs:{Caliber:'7.62×51mm NATO',Weight:'5.4 kg',Magazine:'5 rounds',Range:'800 m',Origin:'USA (1988)'}},
+  {name:'Sako TRG-42',cat:'sniper',img:'Gun Images/Sako TRG-42.jpg',specs:{Caliber:'.338 Lapua Mag',Weight:'5.1 kg',Magazine:'5 rounds',Range:'1,500 m',Origin:'Finland (2000)'}},
+  {name:'DSR-1',cat:'sniper',img:'Gun Images/DSR-1.jpg',specs:{Caliber:'.300 Win Mag',Weight:'5.9 kg',Magazine:'4 rounds',Range:'1,000 m',Origin:'Germany (2000)'}},
+  {name:'HK MP5',cat:'smg',img:'Gun Images/HK_MP5.jpg',specs:{Caliber:'9×19mm Parabellum',Weight:'2.54 kg',Magazine:'30 rounds',Range:'200 m',Origin:'Germany (1966)'}},
+  {name:'Uzi',cat:'smg',img:'Gun Images/Uzi.jpg',specs:{Caliber:'9×19mm Parabellum',Weight:'3.5 kg',Magazine:'32 rounds',Range:'200 m',Origin:'Israel (1954)'}},
+  {name:'Thompson M1A1',cat:'smg',img:'Gun Images/Thompson.jpg',specs:{Caliber:'.45 ACP',Weight:'4.74 kg',Magazine:'30 rounds',Range:'150 m',Origin:'USA (1919)'}},
+  {name:'FN P90',cat:'smg',img:'Gun Images/FN P90.jpg',specs:{Caliber:'5.7×28mm FN',Weight:'2.54 kg',Magazine:'50 rounds',Range:'200 m',Origin:'Belgium (1990)'}},
+  {name:'MP40',cat:'smg',img:'Gun Images/mp40.jpg',specs:{Caliber:'9×19mm Parabellum',Weight:'3.97 kg',Magazine:'32 rounds',Range:'100 m',Origin:'Germany (1940)'}},
+  {name:'HK MP7',cat:'smg',img:'Gun Images/Heckler_&_Koch.jpg',specs:{Caliber:'4.6×30mm HK',Weight:'1.2 kg',Magazine:'40 rounds',Range:'200 m',Origin:'Germany (2001)'}},
+  {name:'Steyr TMP',cat:'smg',img:'Gun Images/STEYRTMP.jpg',specs:{Caliber:'9×19mm Parabellum',Weight:'1.3 kg',Magazine:'30 rounds',Range:'100 m',Origin:'Austria (1992)'}},
+  {name:'PP-19 Bizon',cat:'smg',img:'Gun Images/bizon.jpg',specs:{Caliber:'9×18mm Makarov',Weight:'2.1 kg',Magazine:'64-round helical',Range:'150 m',Origin:'Russia (1996)'}},
+  {name:'KRISS Vector',cat:'smg',img:'Gun Images/Kriss_Vector.jpg',specs:{Caliber:'.45 ACP / 9mm',Weight:'2.18 kg',Magazine:'13–25 rounds',Range:'50 m',Origin:'USA (2009)'}},
+  {name:'vz. 61 Škorpion',cat:'smg',img:'Gun Images/CZUSA.jpg',specs:{Caliber:'7.65×17mm',Weight:'1.28 kg',Magazine:'20 rounds',Range:'50 m',Origin:'Czechoslovakia (1961)'}}
 ];
 
-/* ── Category config ── */
-var CMP_CATS = [
-  { key:'pistol',  label:'Pistols',  icon:'🔫', color:'#6ab04c', rgb:'106,176,76'  },
-  { key:'rifle',   label:'Rifles',   icon:'🪖', color:'#c8a84b', rgb:'200,168,75'  },
-  { key:'shotgun', label:'Shotguns', icon:'💥', color:'#e05555', rgb:'224,85,85'   },
-  { key:'sniper',  label:'Snipers',  icon:'🎯', color:'#4ab0d0', rgb:'74,176,208'  },
-  { key:'smg',     label:'SMGs',     icon:'⚡', color:'#b04ce8', rgb:'176,76,232'  }
-];
+var CAT_META = {
+  pistol:  {label:'Pistols',      icon:'<svg viewBox="0 0 32 32" fill="currentColor"><rect x="2" y="13" width="18" height="6" rx="2"/><path d="M20 14 L29 11 L29 19 L20 16 Z"/><rect x="5" y="19" width="4" height="6" rx="1.5"/><rect x="4" y="13" width="2.5" height="3" rx="0.5"/><circle cx="8" cy="14.5" r="1"/></svg>'},
+  rifle:   {label:'Rifles',       icon:'<svg viewBox="0 0 32 32" fill="currentColor"><rect x="1" y="14" width="22" height="4" rx="1.5"/><path d="M23 14.5 L31 12 L31 20 L23 17.5 Z"/><rect x="6" y="14" width="2" height="7" rx="1"/><rect x="10" y="11" width="5" height="3" rx="1"/><rect x="3" y="18" width="7" height="3" rx="1.5"/></svg>'},
+  shotgun: {label:'Shotguns',     icon:'<svg viewBox="0 0 32 32" fill="currentColor"><rect x="1" y="14" width="20" height="5" rx="2"/><path d="M21 14.5 L30 12 L30 19 L21 18.5 Z"/><rect x="4" y="19" width="5" height="5" rx="2"/><circle cx="6" cy="14.5" r="1"/><circle cx="10" cy="14.5" r="1"/></svg>'},
+  sniper:  {label:'Sniper Rifles',icon:'<svg viewBox="0 0 32 32" fill="currentColor"><rect x="1" y="15" width="24" height="3" rx="1"/><path d="M25 15.5 L31 14 L31 18 L25 16.5 Z"/><rect x="10" y="10" width="7" height="5" rx="1.5"/><rect x="4" y="18" width="6" height="2" rx="1"/></svg>'},
+  smg:     {label:'SMGs',         icon:'<svg viewBox="0 0 32 32" fill="currentColor"><rect x="1" y="13" width="15" height="5" rx="1.5"/><path d="M16 13.5 L26 11 L26 18 L16 17.5 Z"/><rect x="4" y="18" width="3.5" height="5" rx="1.5"/><rect x="10" y="11" width="4" height="2" rx="0.5"/></svg>'}
+};
+var CAT_CLR = {pistol:'#6ab04c',rifle:'#c8a84b',shotgun:'#e05555',sniper:'#4ab0d0',smg:'#b04ce8'};
 
-/* ── State ── */
-var cmpGunA       = null;   /* set from sessionStorage on page load */
-var cmpGunB       = null;   /* set when user confirms */
-var cmpSelectedCat = null;
-var cmpSelectedGun = null;
+var gunA = null;
+var gunB = null;
+var selectedCat = null;
 
-/* ================================================================
-   OPEN / CLOSE
-================================================================ */
+/* ── Open / Close ── */
 function openCompare() {
   var ov = document.getElementById('cmpOverlay');
   ov.classList.add('open');
   document.body.style.overflow = 'hidden';
-  fillSlotA();
+
+  /* Reset Gun B state so modal starts fresh every time */
+  gunB = null; selectedCat = null;
+  var chosenB = document.getElementById('chosenBDisplay');
+  var picker  = document.getElementById('pickerWrap');
+  var tblWrap = document.getElementById('cmpTableWrap');
+  var prompt  = document.getElementById('cmpPrompt');
+  var gunList = document.getElementById('pickerGunList');
+  if (chosenB) chosenB.style.display = 'none';
+  if (picker)  picker.classList.add('open');
+  if (tblWrap) tblWrap.classList.remove('show');
+  if (prompt)  prompt.style.display = 'block';
+  if (gunList) gunList.innerHTML = '';
+  document.querySelectorAll('.cmp-cat-pill').forEach(function(p){ p.classList.remove('sel-cat'); });
+
+  /* Reset step indicators */
+  var stepB = document.getElementById('stepB');
+  var stepBNum = document.getElementById('stepBNum');
+  var stepC = document.getElementById('stepC');
+  if (stepB) { stepB.classList.remove('done'); stepB.classList.add('active'); }
+  if (stepBNum) stepBNum.textContent = '2';
+  if (stepC) stepC.classList.remove('active');
+
+  fillGunA();
+  buildCatPills();
 }
+
 function closeCompare() {
   document.getElementById('cmpOverlay').classList.remove('open');
   document.body.style.overflow = '';
 }
-
-/* Close on backdrop click */
-document.getElementById('cmpOverlay').addEventListener('click', function(e) {
-  if (e.target === this) closeCompare();
-});
-/* Close on Escape */
-document.addEventListener('keydown', function(e) {
-  if (e.key === 'Escape') closeCompare();
+document.getElementById('cmpOverlay').addEventListener('click', function(e){
+  if (e.target===this) closeCompare();
 });
 
-/* ================================================================
-   SLOT A — pre-fill from current gun
-================================================================ */
-function fillSlotA() {
-  if (!cmpGunA) return;
-  document.getElementById('cmpImgA').src        = cmpGunA.img;
-  document.getElementById('cmpImgA').alt        = cmpGunA.name;
-  document.getElementById('cmpNameA').textContent = cmpGunA.name;
-  document.getElementById('cmpCatA').textContent  = cmpGunA.category.toUpperCase();
-
-  /* tint the cat label with its color */
-  var catObj = CMP_CATS.find(function(c) { return c.key === cmpGunA.category.toLowerCase(); });
-  if (catObj) document.getElementById('cmpCatA').style.color = catObj.color;
+/* ── Fill Gun A from sessionStorage ── */
+function fillGunA() {
+  if (!gunA) {
+    try {
+      var data = JSON.parse(sessionStorage.getItem('wv_gun') || 'null');
+      if (data) gunA = { name:data.name, category:(data.category||'pistol').toLowerCase(), img:data.img, specs:data.specs };
+    } catch(e){}
+  }
+  if (!gunA) return;
+  var imgEl = document.getElementById('cmpImgA');
+  var nameEl = document.getElementById('cmpNameA');
+  var catEl  = document.getElementById('cmpCatA');
+  if (imgEl)  imgEl.src = gunA.img;
+  if (nameEl) nameEl.textContent = gunA.name;
+  if (catEl)  {
+    var clr = CAT_CLR[gunA.category] || '#6ab04c';
+    catEl.textContent = (CAT_META[gunA.category] ? CAT_META[gunA.category].label : gunA.category).toUpperCase();
+    catEl.style.color = clr;
+  }
 }
 
-/* ================================================================
-   BUILD CATEGORY CHIPS
-================================================================ */
-function buildCatChips() {
-  var wrap = document.getElementById('cmpCatChips');
-  wrap.innerHTML = '';
-  CMP_CATS.forEach(function(c) {
+/* ── Build category pill buttons — always rebuilt fresh ── */
+function buildCatPills() {
+  var grid = document.getElementById('pickerCatGrid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  Object.keys(CAT_META).forEach(function(cat){
+    var m = CAT_META[cat];
     var btn = document.createElement('button');
-    btn.className = 'cmp-cat-chip';
-    btn.setAttribute('data-cat', c.key);
-    btn.innerHTML =
-      '<span class="cmp-cat-chip-icon">' + c.icon + '</span>' + c.label;
-
-    /* hover: glow in the category colour */
-    btn.addEventListener('mouseenter', function() {
-      if (!btn.classList.contains('active')) {
-        btn.style.borderColor = c.color;
-        btn.style.color       = c.color;
-        btn.style.background  = 'rgba(' + c.rgb + ',.1)';
-        btn.style.boxShadow   = '0 3px 12px rgba(' + c.rgb + ',.18)';
-        btn.style.transform   = 'translateY(-2px)';
-      }
+    btn.className = 'cmp-cat-pill';
+    btn.setAttribute('data-cat', cat);
+    btn.innerHTML = '<span class="cmp-cat-pill-icon">'+m.icon+'</span>' + m.label;
+    btn.addEventListener('click', function(){
+      document.querySelectorAll('.cmp-cat-pill').forEach(function(b){ b.classList.remove('sel-cat'); });
+      btn.classList.add('sel-cat');
+      selectedCat = cat;
+      buildGunList(cat);
     });
-    btn.addEventListener('mouseleave', function() {
-      if (!btn.classList.contains('active')) {
-        btn.style.borderColor = '';
-        btn.style.color       = '';
-        btn.style.background  = '';
-        btn.style.boxShadow   = '';
-        btn.style.transform   = '';
-      }
-    });
-
-    btn.addEventListener('click', function() { selectCat(c.key); });
-    wrap.appendChild(btn);
+    grid.appendChild(btn);
   });
 }
 
-/* ================================================================
-   SELECT CATEGORY → show gun list
-================================================================ */
-function selectCat(catKey) {
-  cmpSelectedCat = catKey;
-  cmpSelectedGun = null;
-  document.getElementById('cmpConfirmBtn').disabled = true;
-
-  var catObj = CMP_CATS.find(function(c) { return c.key === catKey; });
-
-  /* update chip states */
-  document.querySelectorAll('.cmp-cat-chip').forEach(function(ch) {
-    var isActive = ch.getAttribute('data-cat') === catKey;
-    ch.classList.toggle('active', isActive);
-    if (isActive && catObj) {
-      ch.style.borderColor = catObj.color;
-      ch.style.background  = 'rgba(' + catObj.rgb + ',.18)';
-      ch.style.color       = '#fff';
-      ch.style.boxShadow   = '0 0 14px rgba(' + catObj.rgb + ',.22)';
-      ch.style.transform   = 'translateY(-1px)';
-    } else {
-      ch.style.borderColor = '';
-      ch.style.background  = '';
-      ch.style.color       = '';
-      ch.style.boxShadow   = '';
-      ch.style.transform   = '';
-    }
-  });
-
-  /* build gun list */
-  var listWrap = document.getElementById('cmpGunListWrap');
-  var list     = document.getElementById('cmpGunList');
+/* ── Build clickable gun list for chosen category ── */
+function buildGunList(cat) {
+  var list = document.getElementById('pickerGunList');
   list.innerHTML = '';
-
-  var guns = GUN_DB.filter(function(g) { return g.cat === catKey; });
-  guns.forEach(function(g) {
+  var guns = GUN_DB.filter(function(g){ return g.cat===cat; });
+  guns.forEach(function(g){
     var item = document.createElement('div');
     item.className = 'cmp-gun-item';
-    item.innerHTML =
-      '<span class="cmp-gun-item-emoji">' + (catObj ? catObj.icon : '🔫') + '</span>' +
-      '<span class="cmp-gun-item-name">' + g.name + '</span>' +
-      '<span class="cmp-gun-item-check">✓</span>';
-
-    /* hover tint in cat color */
-    item.addEventListener('mouseenter', function() {
-      if (!item.classList.contains('selected') && catObj) {
-        item.style.background   = 'rgba(' + catObj.rgb + ',.15)';
-        item.style.borderColor  = 'rgba(' + catObj.rgb + ',.4)';
-      }
-    });
-    item.addEventListener('mouseleave', function() {
-      if (!item.classList.contains('selected')) {
-        item.style.background  = '';
-        item.style.borderColor = '';
-      }
-    });
-
-    item.addEventListener('click', function() { selectGunItem(catKey, g.name, item, catObj); });
+    var img = document.createElement('img');
+    img.src = g.img; img.alt = g.name;
+    img.onerror = function(){ this.style.opacity='0.2'; };
+    var nameDiv = document.createElement('div');
+    nameDiv.className = 'cmp-gun-item-name';
+    nameDiv.textContent = g.name;
+    item.appendChild(img);
+    item.appendChild(nameDiv);
+    item.addEventListener('click', function(){ selectGunB(g); });
     list.appendChild(item);
   });
-
-  /* re-trigger slide-in animation */
-  listWrap.style.display = 'none';
-  void listWrap.offsetWidth; /* force reflow */
-  listWrap.style.display = 'block';
+  list.classList.add('open');
 }
 
-/* ================================================================
-   SELECT GUN ITEM
-================================================================ */
-function selectGunItem(catKey, gunName, itemEl, catObj) {
-  cmpSelectedCat = catKey;
-  cmpSelectedGun = gunName;
-
-  document.querySelectorAll('.cmp-gun-item').forEach(function(el) {
-    el.classList.remove('selected');
-    el.style.background  = '';
-    el.style.borderColor = '';
-  });
-
-  itemEl.classList.add('selected');
-  if (catObj) {
-    itemEl.style.background  = 'rgba(' + catObj.rgb + ',.18)';
-    itemEl.style.borderColor = catObj.color;
-  }
-
-  document.getElementById('cmpConfirmBtn').disabled = false;
-}
-
-/* ================================================================
-   CONFIRM GUN B
-================================================================ */
-function confirmGunB() {
-  if (!cmpSelectedCat || !cmpSelectedGun) return;
-
-  var found = GUN_DB.find(function(g) {
-    return g.name === cmpSelectedGun && g.cat === cmpSelectedCat;
-  });
-  if (!found) return;
-  cmpGunB = found;
-
-  var catObj = CMP_CATS.find(function(c) { return c.key === cmpSelectedCat; });
-  var color  = catObj ? catObj.color : '#6ab04c';
-
-  /* show chosen card */
-  document.getElementById('cmpImgB').src  = cmpGunB.img;
-  document.getElementById('cmpImgB').alt  = cmpGunB.name;
-  document.getElementById('cmpNameB').textContent = cmpGunB.name;
-  document.getElementById('cmpCatB').textContent  = (catObj ? catObj.label.replace(/s$/,'') : cmpSelectedCat).toUpperCase();
-  document.getElementById('cmpCatB').style.color  = color;
-
-  var chosenB = document.getElementById('chosenB');
-  chosenB.style.display      = 'flex';
-  chosenB.style.borderColor  = color;
-  chosenB.style.boxShadow    = '0 0 18px rgba(' + (catObj ? catObj.rgb : '200,168,75') + ',.14)';
-
-  document.getElementById('pickerB').style.display = 'none';
-
+/* ── Select Gun B and show comparison ── */
+function selectGunB(g) {
+  gunB = g;
+  document.getElementById('cmpImgB').src = g.img;
+  document.getElementById('cmpNameB').textContent = g.name;
+  var catEl = document.getElementById('cmpCatB');
+  catEl.textContent = (CAT_META[g.cat]||{label:g.cat}).label.toUpperCase();
+  catEl.style.color = CAT_CLR[g.cat] || '#6ab04c';
+  document.getElementById('chosenBDisplay').style.display = 'flex';
+  document.getElementById('pickerWrap').classList.remove('open');
+  /* Step indicators */
+  document.getElementById('stepB').classList.remove('active');
+  document.getElementById('stepB').classList.add('done');
+  document.getElementById('stepBNum').textContent = '✓';
+  document.getElementById('stepC').classList.add('active');
   renderCompareTable();
 }
 
-/* ================================================================
-   CHANGE GUN B (back to picker)
-================================================================ */
-function changeGunB() {
-  document.getElementById('chosenB').style.display  = 'none';
-  document.getElementById('pickerB').style.display  = 'flex';
-  document.getElementById('cmpTableWrap').style.display = 'none';
-  document.getElementById('cmpEmpty').style.display = 'block';
-  cmpGunB = null;
-  cmpSelectedGun = null;
-  document.getElementById('cmpConfirmBtn').disabled = true;
+function showPicker() {
+  document.getElementById('chosenBDisplay').style.display = 'none';
+  document.getElementById('pickerWrap').classList.add('open');
+  document.getElementById('cmpTableWrap').classList.remove('show');
+  document.getElementById('cmpPrompt').style.display = 'block';
+  document.getElementById('stepB').classList.remove('done');
+  document.getElementById('stepB').classList.add('active');
+  document.getElementById('stepBNum').textContent = '2';
+  document.getElementById('stepC').classList.remove('active');
+  gunB = null;
 }
 
-/* ================================================================
-   RENDER COMPARE TABLE
-================================================================ */
+/* ── Render comparison table ── */
 function renderCompareTable() {
-  if (!cmpGunA || !cmpGunB) return;
+  if (!gunA || !gunB) return;
+  var prompt  = document.getElementById('cmpPrompt');
+  var wrap    = document.getElementById('cmpTableWrap');
+  var head    = document.getElementById('cmpTblHead');
+  var body    = document.getElementById('cmpTblBody');
+  var summary = document.getElementById('cmpSummary');
+  if (prompt) prompt.style.display = 'none';
+  wrap.classList.add('show');
 
-  var tableWrap = document.getElementById('cmpTableWrap');
-  var emptyEl   = document.getElementById('cmpEmpty');
-  var header    = document.getElementById('cmpTableHeader');
-  var body      = document.getElementById('cmpTableBody');
+  var specsA = gunA.specs || {};
+  var specsB = gunB.specs || {};
+  var clrA = CAT_CLR[(gunA.category||'pistol').toLowerCase()] || '#6ab04c';
+  var clrB = CAT_CLR[gunB.cat] || '#6ab04c';
+  var labelA = (CAT_META[gunA.category]||{label:gunA.category}).label;
+  var labelB = (CAT_META[gunB.cat]||{label:gunB.cat}).label;
 
-  emptyEl.style.display   = 'none';
+  head.innerHTML =
+    '<div class="cmp-tbl-th"><div class="cmp-tbl-label">SPECIFICATION</div></div>' +
+    '<div class="cmp-tbl-th"><img src="'+gunA.img+'" alt="'+gunA.name+'"/>'+
+      '<div class="cmp-tbl-th-name">'+gunA.name+'</div>'+
+      '<span class="cmp-tbl-th-cat" style="color:'+clrA+';border-color:'+clrA+'55">'+labelA.toUpperCase()+'</span></div>' +
+    '<div class="cmp-tbl-th"><img src="'+gunB.img+'" alt="'+gunB.name+'"/>'+
+      '<div class="cmp-tbl-th-name">'+gunB.name+'</div>'+
+      '<span class="cmp-tbl-th-cat" style="color:'+clrB+';border-color:'+clrB+'55">'+labelB.toUpperCase()+'</span></div>';
 
-  /* force animation replay */
-  tableWrap.style.display = 'none';
-  void tableWrap.offsetWidth;
-  tableWrap.style.display = 'block';
-
-  /* category colors */
-  var catA = CMP_CATS.find(function(c) { return c.key === (cmpGunA.category || '').toLowerCase(); });
-  var catB = CMP_CATS.find(function(c) { return c.key === cmpGunB.cat; });
-  var colorA = catA ? catA.color : '#6ab04c';
-  var colorB = catB ? catB.color : '#c8a84b';
-  var labelA = catA ? catA.label.replace(/s$/,'') : cmpGunA.category;
-  var labelB = catB ? catB.label.replace(/s$/,'') : cmpGunB.cat;
-
-  /* ── Header ── */
-  header.innerHTML =
-    '<div class="cmp-th"><div class="cmp-th-spec-label">Specification</div></div>' +
-    '<div class="cmp-th">' +
-      '<img class="cmp-th-img" src="' + cmpGunA.img + '" alt="' + cmpGunA.name + '"/>' +
-      '<div class="cmp-th-name">' + cmpGunA.name + '</div>' +
-      '<div class="cmp-th-cat" style="color:' + colorA + '">' + labelA.toUpperCase() + '</div>' +
-    '</div>' +
-    '<div class="cmp-th">' +
-      '<img class="cmp-th-img" src="' + cmpGunB.img + '" alt="' + cmpGunB.name + '"/>' +
-      '<div class="cmp-th-name">' + cmpGunB.name + '</div>' +
-      '<div class="cmp-th-cat" style="color:' + colorB + '">' + labelB.toUpperCase() + '</div>' +
-    '</div>';
-
-  /* ── Spec rows ── */
-  var keysA = Object.keys(cmpGunA.specs);
-  var keysB = Object.keys(cmpGunB.specs);
   var allKeys = [];
-  keysA.forEach(function(k) { if (allKeys.indexOf(k) === -1) allKeys.push(k); });
-  keysB.forEach(function(k) { if (allKeys.indexOf(k) === -1) allKeys.push(k); });
+  [specsA, specsB].forEach(function(s){
+    Object.keys(s).forEach(function(k){ if(allKeys.indexOf(k)===-1) allKeys.push(k); });
+  });
 
+  var winsA = 0, winsB = 0;
   body.innerHTML = '';
-  allKeys.forEach(function(key) {
-    var vA = cmpGunA.specs[key] || '—';
-    var vB = cmpGunB.specs[key] || '—';
-
-    /* numeric winner highlight */
+  allKeys.forEach(function(key){
+    var vA = specsA[key] || '—';
+    var vB = specsB[key] || '—';
     var hlA = '', hlB = '';
-    var nA = parseFloat(String(vA).replace(/[^0-9.]/g, ''));
-    var nB = parseFloat(String(vB).replace(/[^0-9.]/g, ''));
+    var nA = parseFloat(String(vA).replace(/[^0-9.]/g,''));
+    var nB = parseFloat(String(vB).replace(/[^0-9.]/g,''));
     if (!isNaN(nA) && !isNaN(nB) && nA !== nB) {
       var kl = key.toLowerCase();
-      if (kl === 'range')                            { nA > nB ? hlA = 'winner' : hlB = 'winner'; }
-      else if (kl === 'weight')                      { nA < nB ? hlA = 'winner' : hlB = 'winner'; }
-      else if (kl === 'magazine' || kl === 'capacity'){ nA > nB ? hlA = 'winner' : hlB = 'winner'; }
+      var aWins = (kl==='weight') ? (nA < nB) : (nA > nB);
+      if (aWins) { hlA=' winner'; hlB=' loser'; winsA++; }
+      else       { hlA=' loser';  hlB=' winner'; winsB++; }
     }
-
     var row = document.createElement('div');
-    row.className = 'cmp-spec-row';
+    row.className = 'cmp-tbl-row';
     row.innerHTML =
-      '<div class="cmp-spec-key">' + key + '</div>' +
-      '<div class="cmp-spec-val ' + hlA + '">' + vA + '</div>' +
-      '<div class="cmp-spec-val ' + hlB + '">' + vB + '</div>';
+      '<div class="cmp-tbl-key">'+key+'</div>'+
+      '<div class="cmp-tbl-val'+hlA+'">'+vA+'</div>'+
+      '<div class="cmp-tbl-val'+hlB+'">'+vB+'</div>';
     body.appendChild(row);
   });
+
+  var aWinner = winsA > winsB, bWinner = winsB > winsA, tied = winsA===winsB;
+  summary.innerHTML =
+    '<div class="cmp-sum-half">'+
+      '<div class="cmp-sum-score" style="color:'+(aWinner?'var(--gl)':'var(--grey)')+'">'+winsA+'</div>'+
+      '<div class="cmp-sum-info"><div class="cmp-sum-name">'+gunA.name+'</div><div class="cmp-sum-label">specs won</div></div>'+
+      (aWinner?'<span class="cmp-winner-badge win">⭐ WINNER</span>':'')+
+      (tied?'<span class="cmp-winner-badge tie">⚖ TIE</span>':'')+
+    '</div>'+
+    '<div class="cmp-sum-half">'+
+      '<div class="cmp-sum-score" style="color:'+(bWinner?'var(--gold)':'var(--grey)')+'">'+winsB+'</div>'+
+      '<div class="cmp-sum-info"><div class="cmp-sum-name">'+gunB.name+'</div><div class="cmp-sum-label">specs won</div></div>'+
+      (bWinner?'<span class="cmp-winner-badge win">⭐ WINNER</span>':'')+
+      (tied?'<span class="cmp-winner-badge tie">⚖ TIE</span>':'')+
+    '</div>';
 }
 
-/* ================================================================
-   INIT — runs on DOMContentLoaded
-================================================================ */
-window.addEventListener('DOMContentLoaded', function() {
-
-  /* Expand accent line on detail page */
-  setTimeout(function() {
-    var line = document.getElementById('gd-line');
-    if (line) line.classList.add('expanded');
-  }, 350);
-
-  /* Read current gun from sessionStorage */
-  try {
-    var data = JSON.parse(sessionStorage.getItem('wv_gun') || 'null');
-    if (data) {
-      cmpGunA = {
-        name:     data.name,
-        category: data.category,
-        img:      data.img,
-        specs:    data.specs
-      };
-    }
-  } catch(e) {}
-
-  /* Build the category chip buttons */
-  buildCatChips();
-});
-
-
-/* ── Init on page load ── */
+/* ── Page init ── */
 window.addEventListener('DOMContentLoaded', function(){
-  /* Expand accent line */
   setTimeout(function(){
     var line = document.getElementById('gd-line');
     if (line) line.classList.add('expanded');
   }, 350);
 
-  /* Read gun data stored by script.js */
+  /* Load gunA — normalize category to lowercase to match CAT_META keys */
   try {
     var data = JSON.parse(sessionStorage.getItem('wv_gun') || 'null');
     if (data) {
       gunA = {
         name:     data.name,
-        category: data.category,
+        category: (data.category || 'pistol').toLowerCase(),
         img:      data.img,
         specs:    data.specs
       };
     }
   } catch(e) {}
+
+  /* Pre-build pills so modal is ready immediately on first click */
+  buildCatPills();
 });
 </script>
 </body>
